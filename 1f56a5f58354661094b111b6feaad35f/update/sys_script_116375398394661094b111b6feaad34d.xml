@@ -1,0 +1,109 @@
+<?xml version="1.0" encoding="UTF-8"?><record_update sys_domain="global" table="sys_script">
+    <sys_script action="INSERT_OR_UPDATE">
+        <abort_action>false</abort_action>
+        <access>package_private</access>
+        <action_delete>false</action_delete>
+        <action_insert>false</action_insert>
+        <action_query>false</action_query>
+        <action_update>true</action_update>
+        <active>true</active>
+        <add_message>false</add_message>
+        <advanced>true</advanced>
+        <change_fields>false</change_fields>
+        <client_callable>false</client_callable>
+        <collection>incident</collection>
+        <condition/>
+        <description/>
+        <execute_function>false</execute_function>
+        <filter_condition table="incident">stateCHANGESTO6^EQ<item display_value="Resolved" endquery="false" field="state" goto="false" newquery="false" operator="CHANGESTO" or="false" value="6"/>
+            <item endquery="true" field="" goto="false" newquery="false" operator="=" or="false" value=""/>
+        </filter_condition>
+        <is_rest>false</is_rest>
+        <message/>
+        <name>Generate Haiku</name>
+        <order>100</order>
+        <priority>100</priority>
+        <rest_method/>
+        <rest_method_text/>
+        <rest_service/>
+        <rest_service_text/>
+        <rest_variables/>
+        <role_conditions/>
+        <script><![CDATA[(function executeRule(current, previous /*null when async*/) {
+    // Only run when close_notes exist (typically when an incident is resolved)
+    if (current.close_notes) {
+        try {
+            // Create prompt by combining incident fields
+            var prompt = 'Write a haiku based on the following ServiceNow incident details. ' + 
+                         'Short Description: ' + current.short_description + '. ' +
+                         'Description: ' + current.description + '. ' +
+                         'Resolution: ' + current.close_notes;
+            
+			var apiKey = gs.getProperty('x_1511177_knowle_0.togetherai.api.key');
+
+            // Create and configure REST message
+            var r = new sn_ws.RESTMessageV2('x_1511177_knowle_0.Together.ai', 'generate_haiku');
+            r.setStringParameterNoEscape('apiKey', apiKey);
+            r.setStringParameterNoEscape('prompt', prompt);
+            
+ // Execute the REST message
+            var response = r.execute();
+            var responseBody = response.getBody();
+            var httpStatus = response.getStatusCode();
+            
+            // Process successful response
+            if (httpStatus == 200) {
+                // Parse the response JSON to extract only the content field from the specific path
+                var responseObj = JSON.parse(responseBody);
+                var haiku = "";
+                
+                // Extract haiku from the specific path in Together.ai response
+                if (responseObj.choices && 
+                    responseObj.choices.length > 0 && 
+                    responseObj.choices[0].message && 
+                    responseObj.choices[0].message.content) {
+                    haiku = responseObj.choices[0].message.content;
+                } else {
+                    gs.error("Unable to find haiku content in API response");
+                    haiku = "Error extracting haiku from response";
+                }
+                
+                // Add the haiku as a work note or custom field
+                // Option 1: Add as work note
+                current.work_notes = "AI Generated Haiku:\n" + haiku;
+                current.update();
+                
+                // Option 2: If you have a custom field for the haiku
+                // current.u_ai_haiku = haiku;
+                // current.update();
+                
+                gs.info("Successfully generated haiku for incident: " + current.number);
+            } else {
+                gs.error("Error generating haiku. HTTP Status: " + httpStatus + ", Response: " + responseBody);
+            }
+            
+        } catch(ex) {
+            gs.error("Exception in Together.ai haiku generation: " + ex.message);
+        }
+    }
+})(current, previous);]]></script>
+        <sys_class_name>sys_script</sys_class_name>
+        <sys_created_by>admin</sys_created_by>
+        <sys_created_on>2025-03-16 02:00:10</sys_created_on>
+        <sys_domain>global</sys_domain>
+        <sys_domain_path>/</sys_domain_path>
+        <sys_id>116375398394661094b111b6feaad34d</sys_id>
+        <sys_mod_count>6</sys_mod_count>
+        <sys_name>Generate Haiku</sys_name>
+        <sys_overrides/>
+        <sys_package display_value="Knowledge 25 Presentation" source="x_1511177_knowle_0">1f56a5f58354661094b111b6feaad35f</sys_package>
+        <sys_policy/>
+        <sys_scope display_value="Knowledge 25 Presentation">1f56a5f58354661094b111b6feaad35f</sys_scope>
+        <sys_update_name>sys_script_116375398394661094b111b6feaad34d</sys_update_name>
+        <sys_updated_by>admin</sys_updated_by>
+        <sys_updated_on>2025-03-16 02:36:08</sys_updated_on>
+        <template/>
+        <when>async_always</when>
+    </sys_script>
+    <sys_translated_text action="delete_multiple" query="documentkey=116375398394661094b111b6feaad34d"/>
+</record_update>

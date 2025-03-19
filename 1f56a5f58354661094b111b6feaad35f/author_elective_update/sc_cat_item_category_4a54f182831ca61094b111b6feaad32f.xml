@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="UTF-8"?><record_update table="sc_cat_item_category">
+    <sc_cat_item_category action="DELETE">
+        <sc_cat_item display_value="Request an image">ccb33542831ca61094b111b6feaad3b6</sc_cat_item>
+        <sc_category display_value="Software">2809952237b1300054b6a3549dbe5dd4</sc_category>
+        <sys_class_name>sc_cat_item_category</sys_class_name>
+        <sys_created_by>admin</sys_created_by>
+        <sys_created_on>2025-03-16 20:41:51</sys_created_on>
+        <sys_id>4a54f182831ca61094b111b6feaad32f</sys_id>
+        <sys_mod_count>0</sys_mod_count>
+        <sys_name>Software.Request an image</sys_name>
+        <sys_package display_value="Knowledge 25 Presentation" source="x_1511177_knowle_0">1f56a5f58354661094b111b6feaad35f</sys_package>
+        <sys_policy/>
+        <sys_scope display_value="Knowledge 25 Presentation">1f56a5f58354661094b111b6feaad35f</sys_scope>
+        <sys_update_name>sc_cat_item_category_4a54f182831ca61094b111b6feaad32f</sys_update_name>
+        <sys_updated_by>admin</sys_updated_by>
+        <sys_updated_on>2025-03-16 20:41:51</sys_updated_on>
+    </sc_cat_item_category>
+    <sys_update_version action="INSERT_OR_UPDATE">
+        <action>DELETE</action>
+        <application display_value="Knowledge 25 Presentation">1f56a5f58354661094b111b6feaad35f</application>
+        <file_path/>
+        <instance_id>be1609c71bb84a18168f4089bd4bcb71</instance_id>
+        <instance_name>dev240436</instance_name>
+        <name>sc_cat_item_category_4a54f182831ca61094b111b6feaad32f</name>
+        <payload><![CDATA[<?xml version="1.0" encoding="UTF-8"?><record_update table="sc_cat_item_category"><sc_cat_item_category action="INSERT_OR_UPDATE"><sc_cat_item display_value="Request an image">ccb33542831ca61094b111b6feaad3b6</sc_cat_item><sc_category display_value="Software">2809952237b1300054b6a3549dbe5dd4</sc_category><sys_class_name>sc_cat_item_category</sys_class_name><sys_created_by>admin</sys_created_by><sys_created_on>2025-03-16 20:41:51</sys_created_on><sys_id>4a54f182831ca61094b111b6feaad32f</sys_id><sys_mod_count>0</sys_mod_count><sys_name>Software.Request an image</sys_name><sys_package display_value="Knowledge 25 Presentation" source="x_1511177_knowle_0">1f56a5f58354661094b111b6feaad35f</sys_package><sys_policy/><sys_scope display_value="Knowledge 25 Presentation">1f56a5f58354661094b111b6feaad35f</sys_scope><sys_update_name>sc_cat_item_category_4a54f182831ca61094b111b6feaad32f</sys_update_name><sys_updated_by>admin</sys_updated_by><sys_updated_on>2025-03-16 20:41:51</sys_updated_on></sc_cat_item_category></record_update>]]></payload>
+        <payload_hash>-573071323</payload_hash>
+        <record_name>Software.Request an image</record_name>
+        <reverted_from/>
+        <source>e756a5f58354661094b111b6feaad364</source>
+        <source_table>sys_update_set</source_table>
+        <state>previous</state>
+        <sys_created_by>admin</sys_created_by>
+        <sys_created_on>2025-03-16 20:41:51</sys_created_on>
+        <sys_id>4a54f182831ca61094b111b6feaad333</sys_id>
+        <sys_mod_count>0</sys_mod_count>
+        <sys_recorded_at>195a0b108930000001</sys_recorded_at>
+        <sys_updated_by>admin</sys_updated_by>
+        <sys_updated_on>2025-03-16 20:41:51</sys_updated_on>
+        <type>Catalog Item Category</type>
+        <update_guid>4e54f182d51ca61029804aec2cd57c32</update_guid>
+        <update_guid_history>4e54f182d51ca61029804aec2cd57c32:-573071323</update_guid_history>
+    </sys_update_version>
+    <sys_metadata_delete action="INSERT_OR_UPDATE">
+        <sys_audit_delete display_value="Software.Request an image">d4e29e4683dca61094b111b6feaad35c</sys_audit_delete>
+        <sys_class_name>sys_metadata_delete</sys_class_name>
+        <sys_created_by>admin</sys_created_by>
+        <sys_created_on>2025-03-16 22:55:16</sys_created_on>
+        <sys_db_object display_value="" name="sc_cat_item_category">sc_cat_item_category</sys_db_object>
+        <sys_id>1bcc3a94587840ec84fde1276be6d210</sys_id>
+        <sys_metadata>4a54f182831ca61094b111b6feaad32f</sys_metadata>
+        <sys_mod_count>0</sys_mod_count>
+        <sys_name>Software.Request an image</sys_name>
+        <sys_package display_value="Knowledge 25 Presentation" source="x_1511177_knowle_0">1f56a5f58354661094b111b6feaad35f</sys_package>
+        <sys_parent/>
+        <sys_policy/>
+        <sys_scope display_value="Knowledge 25 Presentation">1f56a5f58354661094b111b6feaad35f</sys_scope>
+        <sys_scope_delete display_value="">99ae5cc179704286a2629e95ad6e1149</sys_scope_delete>
+        <sys_update_name>sc_cat_item_category_4a54f182831ca61094b111b6feaad32f</sys_update_name>
+        <sys_update_version display_value="sc_cat_item_category_4a54f182831ca61094b111b6feaad32f">4a54f182831ca61094b111b6feaad333</sys_update_version>
+        <sys_updated_by>admin</sys_updated_by>
+        <sys_updated_on>2025-03-16 22:55:16</sys_updated_on>
+    </sys_metadata_delete>
+</record_update>

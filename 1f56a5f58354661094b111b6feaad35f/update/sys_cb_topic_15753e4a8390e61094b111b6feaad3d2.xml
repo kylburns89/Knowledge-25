@@ -1,0 +1,450 @@
+<?xml version="1.0" encoding="UTF-8"?><record_update sys_domain="global" table="sys_cb_topic">
+    <sys_cb_topic action="INSERT_OR_UPDATE">
+        <applicability/>
+        <applicability_mode>query</applicability_mode>
+        <autopilot_topic>false</autopilot_topic>
+        <category/>
+        <channels/>
+        <connect_queue/>
+        <context_profiles/>
+        <description/>
+        <dialog_acts_enabled>false</dialog_acts_enabled>
+        <expose_on_palette>false</expose_on_palette>
+        <flexible_conversation_switching>false</flexible_conversation_switching>
+        <foundational>false</foundational>
+        <graph>{
+  "graph_api_version": "1.0.74",
+  "goals": {
+    "primary": {
+      "id": "primary",
+      "trigger": {
+        "type": "primary"
+      },
+      "name": "primary",
+      "applicability": "",
+      "description": "",
+      "nodes": {
+        "f0cd9f4bd19a46d396b38e3e1f8339a4": {
+          "id": "f0cd9f4bd19a46d396b38e3e1f8339a4",
+          "stepType": "Start",
+          "name": "Start",
+          "greetingResponse": {
+            "mode": "simple",
+            "value": ""
+          }
+        },
+        "4bc713ef8a18452e95ab1225a2b35b47": {
+          "id": "4bc713ef8a18452e95ab1225a2b35b47",
+          "stepType": "TerminateGoal",
+          "name": "End",
+          "confirmationMessage": {
+            "mode": "simple",
+            "value": ""
+          }
+        },
+        "dc77254be3ff4a83aada71eb0423d609": {
+          "id": "dc77254be3ff4a83aada71eb0423d609",
+          "stepType": "TextPrompt",
+          "name": "Ask a question",
+          "prompt": {
+            "value": [
+              {
+                "type": "paragraph",
+                "children": [
+                  {
+                    "text": "Ask a question"
+                  }
+                ]
+              }
+            ],
+            "mode": "simple"
+          },
+          "confirmMessage": {
+            "value": "",
+            "mode": "simple"
+          },
+          "acknowledgeMsg": {
+            "value": "",
+            "mode": "simple"
+          },
+          "applicability": {
+            "value": "",
+            "mode": "query"
+          },
+          "skippable": {
+            "value": "",
+            "mode": "query"
+          },
+          "skipReprompt": {
+            "value": "",
+            "mode": "query"
+          },
+          "defaultValue": {
+            "value": "",
+            "mode": "simple"
+          },
+          "withNluUserInput": false,
+          "skipIfFulfilled": false,
+          "variableId": "a5fbcbf3ba8440cda5946c8e22aad231",
+          "detailDescription": "",
+          "inputType": {
+            "format": "Text",
+            "script": ""
+          },
+          "requestFeedback": true
+        },
+        "80ea07a0cddc42f29eb5223dfa54c1de": {
+          "id": "80ea07a0cddc42f29eb5223dfa54c1de",
+          "stepType": "ScriptOutput",
+          "name": "Get response",
+          "output_type": "single_part",
+          "script": "(function execute() {\n\n    var r = new sn_ws.RESTMessageV2('x_1511177_knowle_0.PerplexityAI', 'POST');\n    r.setStringParameterNoEscape('apiKey', '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');\n    r.setStringParameterNoEscape('prompt', vaInputs.ask_a_question);\n    var response = r.execute();\n    var responseBody = response.getBody();\n    var httpStatus = response.getStatusCode();\n    var perplexResponse = JSON.parse(responseBody);\n    // Extract the content and format with citations\n    var formattedAnswer = \"\";\n    \n    try {\n        // Get the message content\n        var content = perplexResponse.choices[0].message.content;\n        \n        // Get the citation links\n        var citations = perplexResponse.citations || [];\n        \n        // Format the answer with the content\n        formattedAnswer = content;\n        \n        // Add formatted citations as hyperlinks if they exist\n        if (citations.length &gt; 0) {\n            formattedAnswer += \"\\n\\n**Sources:**\\n\";\n            \n            for (var i = 0; i &lt; citations.length; i++) {\n                // Create numbered hyperlinks for each citation\n                // ServiceNow uses markdown-like format for hyperlinks: [text](url)\n                formattedAnswer += \"[\" + (i + 1) + \"] [\" + citations[i] + \"](\" + citations[i] + \")\\n\";\n            }\n        }\n    } catch (e) {\n        // Handle any parsing errors\n        formattedAnswer = \"Sorry, I couldn't process that response properly. Error: \" + e.message;\n    }\n    \n    return formattedAnswer;\n\n})()\n   ",
+          "applicability": {
+            "value": "",
+            "mode": "query"
+          }
+        },
+        "40ac042d2f414d658445ba127729040d": {
+          "name": "Got the information or transfer to agent",
+          "prompt": {
+            "value": [
+              {
+                "type": "paragraph",
+                "children": [
+                  {
+                    "text": "Have you received the information you were seeking, or would you like me to connect you with a live agent?"
+                  }
+                ]
+              }
+            ],
+            "mode": "simple"
+          },
+          "confirmMessage": {
+            "value": "",
+            "mode": "simple"
+          },
+          "acknowledgeMsg": {
+            "value": "",
+            "mode": "simple"
+          },
+          "applicability": {
+            "value": "",
+            "mode": "query"
+          },
+          "skippable": {
+            "value": "",
+            "mode": "query"
+          },
+          "skipReprompt": {
+            "value": "",
+            "mode": "query"
+          },
+          "defaultValue": {
+            "value": "",
+            "mode": "simple"
+          },
+          "variableId": "67303a6a77c64d95a0488210b6efedc1",
+          "detailDescription": "",
+          "id": "40ac042d2f414d658445ba127729040d",
+          "stepType": "ChoicePrompt",
+          "hasCardHeader": false,
+          "cardMetadata": {
+            "mode": "card",
+            "metadataScript": "",
+            "cardTemplate": "",
+            "cardFields": {},
+            "cardDefinition": {}
+          },
+          "withNluUserInput": false,
+          "skipIfFulfilled": false
+        },
+        "716b0e0252bc4ce8839beec3744bb788": {
+          "id": "716b0e0252bc4ce8839beec3744bb788",
+          "stepType": "Decision",
+          "name": "Decision"
+        },
+        "ebb25f8340aa4aa58ebf228499980c7b": {
+          "name": "Any other questions?",
+          "prompt": {
+            "value": [
+              {
+                "type": "paragraph",
+                "children": [
+                  {
+                    "text": "Any other questions?"
+                  }
+                ]
+              }
+            ],
+            "mode": "simple"
+          },
+          "confirmMessage": {
+            "value": "",
+            "mode": "simple"
+          },
+          "acknowledgeMsg": {
+            "value": "",
+            "mode": "simple"
+          },
+          "applicability": {
+            "value": "",
+            "mode": "query"
+          },
+          "skippable": {
+            "value": "",
+            "mode": "query"
+          },
+          "skipReprompt": {
+            "value": "",
+            "mode": "query"
+          },
+          "defaultValue": {
+            "value": "",
+            "mode": "simple"
+          },
+          "variableId": "5c526b940fb646b2bf27e4265345b8ed",
+          "detailDescription": "",
+          "id": "ebb25f8340aa4aa58ebf228499980c7b",
+          "stepType": "ChoicePrompt",
+          "hasCardHeader": false,
+          "cardMetadata": {
+            "mode": "card",
+            "metadataScript": "",
+            "cardTemplate": "",
+            "cardFields": {},
+            "cardDefinition": {}
+          },
+          "withNluUserInput": false,
+          "skipIfFulfilled": false
+        },
+        "9ce0ae8d9b7c4c95ae0259b3c1489b3a": {
+          "id": "9ce0ae8d9b7c4c95ae0259b3c1489b3a",
+          "stepType": "Decision",
+          "name": "Decision"
+        },
+        "d2b738afb351485088cc7053c5b9d2d8": {
+          "id": "d2b738afb351485088cc7053c5b9d2d8",
+          "stepType": "ReusableTopic",
+          "name": "Transfer to Live Agent",
+          "fields": [],
+          "applicability": {
+            "value": "",
+            "mode": "query"
+          },
+          "useTemplateTopic": false,
+          "reusableTopicChoice": "Transfer to Live Agent",
+          "reusableTopicId": "9d384761b3633300dbbf6030c6a8dcaa",
+          "inputs": {},
+          "variableIds": [],
+          "dynamicTopicBlockName": {
+            "value": "",
+            "mode": "simple"
+          },
+          "inputDynamicModal": {},
+          "outputDynamicModal": {},
+          "outputs": []
+        }
+      },
+      "edges": [
+        {
+          "id": "383a853c54fc433e8dc7582143723284",
+          "edgeType": "Edge",
+          "source": "f0cd9f4bd19a46d396b38e3e1f8339a4",
+          "target": "dc77254be3ff4a83aada71eb0423d609",
+          "sourcePort": "",
+          "targetPort": ""
+        },
+        {
+          "id": "8a4d41a449f144de84c27cbc1c0d0a97",
+          "edgeType": "Edge",
+          "source": "dc77254be3ff4a83aada71eb0423d609",
+          "target": "80ea07a0cddc42f29eb5223dfa54c1de",
+          "sourcePort": "",
+          "targetPort": ""
+        },
+        {
+          "id": "cc9f448cd5354f39a68911b68ee721a9",
+          "edgeType": "Edge",
+          "source": "80ea07a0cddc42f29eb5223dfa54c1de",
+          "target": "40ac042d2f414d658445ba127729040d",
+          "sourcePort": "",
+          "targetPort": ""
+        },
+        {
+          "id": "1f8e588c4c8c4ca1ba09dc2a69e3b9c2",
+          "edgeType": "Edge",
+          "source": "40ac042d2f414d658445ba127729040d",
+          "target": "716b0e0252bc4ce8839beec3744bb788",
+          "sourcePort": "",
+          "targetPort": ""
+        },
+        {
+          "id": "c37d1d1fd17548f89d77e5c74a0ca869",
+          "edgeType": "Branch",
+          "source": "716b0e0252bc4ce8839beec3744bb788",
+          "target": "ebb25f8340aa4aa58ebf228499980c7b",
+          "sourcePort": "",
+          "targetPort": "",
+          "expression": {
+            "mode": "query",
+            "value": ""
+          },
+          "label": "No"
+        },
+        {
+          "id": "71a49bc184264123a5d56ddadbb44275",
+          "edgeType": "Edge",
+          "source": "ebb25f8340aa4aa58ebf228499980c7b",
+          "target": "9ce0ae8d9b7c4c95ae0259b3c1489b3a",
+          "sourcePort": "",
+          "targetPort": ""
+        },
+        {
+          "id": "645385f3f789437bb48573fd55687858",
+          "edgeType": "Branch",
+          "source": "9ce0ae8d9b7c4c95ae0259b3c1489b3a",
+          "target": "4bc713ef8a18452e95ab1225a2b35b47",
+          "sourcePort": "",
+          "targetPort": "",
+          "expression": {
+            "value": "",
+            "mode": "query"
+          },
+          "label": "No"
+        },
+        {
+          "id": "de51a4a26d5e4480b16e6122f5f6732d",
+          "edgeType": "Branch",
+          "source": "9ce0ae8d9b7c4c95ae0259b3c1489b3a",
+          "target": "dc77254be3ff4a83aada71eb0423d609",
+          "sourcePort": "",
+          "targetPort": "",
+          "expression": {
+            "mode": "query",
+            "value": ""
+          },
+          "label": "Yes"
+        },
+        {
+          "id": "bf7e9de11e3248abaa0a10ad863b3d9d",
+          "edgeType": "Branch",
+          "source": "716b0e0252bc4ce8839beec3744bb788",
+          "target": "d2b738afb351485088cc7053c5b9d2d8",
+          "sourcePort": "",
+          "targetPort": "",
+          "expression": {
+            "value": "",
+            "mode": "query"
+          },
+          "label": "Yes"
+        },
+        {
+          "id": "d4eb9f1a83994e4eaa3c288ca5b6dfed",
+          "edgeType": "Edge",
+          "source": "d2b738afb351485088cc7053c5b9d2d8",
+          "target": "4bc713ef8a18452e95ab1225a2b35b47",
+          "sourcePort": "",
+          "targetPort": ""
+        }
+      ]
+    }
+  },
+  "variables": {
+    "current-user": {
+      "category": "vaInputs",
+      "id": "current-user",
+      "label": "User",
+      "name": "user",
+      "table": "sys_user",
+      "varType": "reference"
+    },
+    "a5fbcbf3ba8440cda5946c8e22aad231": {
+      "id": "a5fbcbf3ba8440cda5946c8e22aad231",
+      "name": "ask_a_question",
+      "label": "Ask A Question",
+      "varType": "string",
+      "secure": false,
+      "category": "vaInputs",
+      "encryptionHashFunction": "SHA-256",
+      "encryptionSalt": {
+        "value": "MTc0MjE3NDc4NjExNiBWQSBEZXNpZ25lciBpcyBhd2Vzb21l",
+        "mode": "simple"
+      },
+      "nodeId": "dc77254be3ff4a83aada71eb0423d609",
+      "isHidden": false
+    },
+    "67303a6a77c64d95a0488210b6efedc1": {
+      "id": "67303a6a77c64d95a0488210b6efedc1",
+      "name": "got_the_information_or_transfer_to_agent",
+      "label": "Got The Information Or Transfer To Agent",
+      "varType": "choice",
+      "choices": [
+        {
+          "label": "Yes",
+          "value": "Yes"
+        },
+        {
+          "label": "No",
+          "value": "No"
+        }
+      ],
+      "category": "vaInputs",
+      "nodeId": "40ac042d2f414d658445ba127729040d",
+      "isHidden": false
+    },
+    "5c526b940fb646b2bf27e4265345b8ed": {
+      "id": "5c526b940fb646b2bf27e4265345b8ed",
+      "name": "any_other_questions_",
+      "label": "Any Other Questions?",
+      "varType": "choice",
+      "choices": [
+        {
+          "label": "Yes",
+          "value": "Yes"
+        },
+        {
+          "label": "No",
+          "value": "No"
+        }
+      ],
+      "category": "vaInputs",
+      "nodeId": "ebb25f8340aa4aa58ebf228499980c7b",
+      "isHidden": false
+    }
+  }
+}</graph>
+        <key_phrases>Ask Perplexity</key_phrases>
+        <library>false</library>
+        <live_agent>false</live_agent>
+        <model_type>nlu_keyword</model_type>
+        <modify_confirmation_enabled>false</modify_confirmation_enabled>
+        <name>Ask Perplexity</name>
+        <nlu_intent/>
+        <nlu_intent_label/>
+        <nlu_model/>
+        <nlu_model_label/>
+        <nlu_provider/>
+        <palette_label/>
+        <roles/>
+        <root_topic_id/>
+        <secure_custom_input_control>false</secure_custom_input_control>
+        <source_topic_id/>
+        <sys_class_name>sys_cb_topic</sys_class_name>
+        <sys_created_by>admin</sys_created_by>
+        <sys_created_on>2025-03-17 01:26:20</sys_created_on>
+        <sys_domain>global</sys_domain>
+        <sys_id>15753e4a8390e61094b111b6feaad3d2</sys_id>
+        <sys_mod_count>5</sys_mod_count>
+        <sys_name>Ask Perplexity</sys_name>
+        <sys_package display_value="Knowledge 25 Presentation" source="x_1511177_knowle_0">1f56a5f58354661094b111b6feaad35f</sys_package>
+        <sys_policy/>
+        <sys_scope display_value="Knowledge 25 Presentation">1f56a5f58354661094b111b6feaad35f</sys_scope>
+        <sys_update_name>sys_cb_topic_15753e4a8390e61094b111b6feaad3d2</sys_update_name>
+        <sys_updated_by>admin</sys_updated_by>
+        <sys_updated_on>2025-03-17 02:31:33</sys_updated_on>
+        <title>Ask Perplexity</title>
+        <triggerable_by_notification>false</triggerable_by_notification>
+        <type>STANDARD</type>
+    </sys_cb_topic>
+    <sys_translated_text action="delete_multiple" query="documentkey=15753e4a8390e61094b111b6feaad3d2"/>
+</record_update>
