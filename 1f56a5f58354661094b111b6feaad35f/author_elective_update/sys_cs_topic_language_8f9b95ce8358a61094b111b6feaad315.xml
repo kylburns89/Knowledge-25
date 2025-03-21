@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="UTF-8"?><record_update sys_domain="global" table="sys_cs_topic_language">
+    <sys_cs_topic_language action="DELETE">
+        <cs_topic_id display_value="_PRVW__7bdddc3b298c495fae650a58c2d71908">369b95ce8358a61094b111b6feaad310</cs_topic_id>
+        <language_code>en</language_code>
+        <nlu_entities>[]</nlu_entities>
+        <nlu_intent>Affirmative</nlu_intent>
+        <nlu_intent_label>Affirmative</nlu_intent_label>
+        <nlu_model>Setup_Topics_Model</nlu_model>
+        <nlu_model_label>Setup Topics Model</nlu_model_label>
+        <nlu_provider>64c023c17300330021a044764df6a70e</nlu_provider>
+        <sys_class_name>sys_cs_topic_language</sys_class_name>
+        <sys_created_by>admin</sys_created_by>
+        <sys_created_on>2025-03-16 18:53:47</sys_created_on>
+        <sys_domain>global</sys_domain>
+        <sys_id>8f9b95ce8358a61094b111b6feaad315</sys_id>
+        <sys_mod_count>0</sys_mod_count>
+        <sys_name/>
+        <sys_package display_value="Knowledge 25 Presentation" source="x_1511177_knowle_0">1f56a5f58354661094b111b6feaad35f</sys_package>
+        <sys_policy/>
+        <sys_scope display_value="Knowledge 25 Presentation">1f56a5f58354661094b111b6feaad35f</sys_scope>
+        <sys_update_name>sys_cs_topic_language_8f9b95ce8358a61094b111b6feaad315</sys_update_name>
+        <sys_updated_by>admin</sys_updated_by>
+        <sys_updated_on>2025-03-16 18:53:47</sys_updated_on>
+    </sys_cs_topic_language>
+    <sys_update_version action="INSERT_OR_UPDATE">
+        <action>DELETE</action>
+        <application display_value="Knowledge 25 Presentation">1f56a5f58354661094b111b6feaad35f</application>
+        <file_path/>
+        <instance_id>be1609c71bb84a18168f4089bd4bcb71</instance_id>
+        <instance_name>dev240436</instance_name>
+        <name>sys_cs_topic_language_8f9b95ce8358a61094b111b6feaad315</name>
+        <payload><![CDATA[<?xml version="1.0" encoding="UTF-8"?><record_update sys_domain="global" table="sys_cs_topic_language"><sys_cs_topic_language action="INSERT_OR_UPDATE"><cs_topic_id display_value="_PRVW__7bdddc3b298c495fae650a58c2d71908">369b95ce8358a61094b111b6feaad310</cs_topic_id><language_code>en</language_code><nlu_entities>[]</nlu_entities><nlu_intent>Affirmative</nlu_intent><nlu_intent_label>Affirmative</nlu_intent_label><nlu_model>Setup_Topics_Model</nlu_model><nlu_model_label>Setup Topics Model</nlu_model_label><nlu_provider>64c023c17300330021a044764df6a70e</nlu_provider><sys_class_name>sys_cs_topic_language</sys_class_name><sys_created_by>admin</sys_created_by><sys_created_on>2025-03-16 18:53:47</sys_created_on><sys_domain>global</sys_domain><sys_id>8f9b95ce8358a61094b111b6feaad315</sys_id><sys_mod_count>0</sys_mod_count><sys_name/><sys_package display_value="Knowledge 25 Presentation" source="x_1511177_knowle_0">1f56a5f58354661094b111b6feaad35f</sys_package><sys_policy/><sys_scope display_value="Knowledge 25 Presentation">1f56a5f58354661094b111b6feaad35f</sys_scope><sys_update_name>sys_cs_topic_language_8f9b95ce8358a61094b111b6feaad315</sys_update_name><sys_updated_by>admin</sys_updated_by><sys_updated_on>2025-03-16 18:53:47</sys_updated_on></sys_cs_topic_language></record_update>]]></payload>
+        <payload_hash>1282226733</payload_hash>
+        <record_name/>
+        <reverted_from/>
+        <source>e756a5f58354661094b111b6feaad364</source>
+        <source_table>sys_update_set</source_table>
+        <state>previous</state>
+        <sys_created_by>admin</sys_created_by>
+        <sys_created_on>2025-03-16 18:53:47</sys_created_on>
+        <sys_id>0b9bd9ce8358a61094b111b6feaad363</sys_id>
+        <sys_mod_count>0</sys_mod_count>
+        <sys_recorded_at>195a04e17c50000001</sys_recorded_at>
+        <sys_updated_by>admin</sys_updated_by>
+        <sys_updated_on>2025-03-16 18:53:47</sys_updated_on>
+        <type>CS Topic Language</type>
+        <update_guid>439b95ceb958a6105c8af0edcc50f317</update_guid>
+        <update_guid_history>439b95ceb958a6105c8af0edcc50f317:1282226733</update_guid_history>
+    </sys_update_version>
+    <sys_metadata_delete action="INSERT_OR_UPDATE">
+        <sys_audit_delete/>
+        <sys_class_name>sys_metadata_delete</sys_class_name>
+        <sys_created_by>admin</sys_created_by>
+        <sys_created_on>2025-03-17 01:25:46</sys_created_on>
+        <sys_db_object display_value="" name="sys_cs_topic_language">sys_cs_topic_language</sys_db_object>
+        <sys_id>27ba12ac3d21465386ce6566bde40ca1</sys_id>
+        <sys_metadata>8f9b95ce8358a61094b111b6feaad315</sys_metadata>
+        <sys_mod_count>0</sys_mod_count>
+        <sys_name/>
+        <sys_package display_value="Knowledge 25 Presentation" source="x_1511177_knowle_0">1f56a5f58354661094b111b6feaad35f</sys_package>
+        <sys_parent/>
+        <sys_policy/>
+        <sys_scope display_value="Knowledge 25 Presentation">1f56a5f58354661094b111b6feaad35f</sys_scope>
+        <sys_scope_delete display_value="">99ae5cc179704286a2629e95ad6e1149</sys_scope_delete>
+        <sys_update_name>sys_cs_topic_language_8f9b95ce8358a61094b111b6feaad315</sys_update_name>
+        <sys_update_version display_value="sys_cs_topic_language_8f9b95ce8358a61094b111b6feaad315">0b9bd9ce8358a61094b111b6feaad363</sys_update_version>
+        <sys_updated_by>admin</sys_updated_by>
+        <sys_updated_on>2025-03-17 01:25:46</sys_updated_on>
+    </sys_metadata_delete>
+</record_update>

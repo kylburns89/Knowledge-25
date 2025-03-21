@@ -1,0 +1,479 @@
+<?xml version="1.0" encoding="UTF-8"?><record_update sys_domain="global" table="sys_cb_topic">
+    <sys_cb_topic action="DELETE">
+        <applicability/>
+        <applicability_mode>query</applicability_mode>
+        <autopilot_topic>false</autopilot_topic>
+        <category/>
+        <channels/>
+        <connect_queue/>
+        <context_profiles/>
+        <description/>
+        <dialog_acts_enabled>false</dialog_acts_enabled>
+        <expose_on_palette>false</expose_on_palette>
+        <flexible_conversation_switching>true</flexible_conversation_switching>
+        <foundational>false</foundational>
+        <graph>{
+  "graph_api_version": "1.0.74",
+  "goals": {
+    "primary": {
+      "id": "primary",
+      "trigger": {
+        "type": "primary"
+      },
+      "name": "primary",
+      "applicability": "",
+      "description": "",
+      "nodes": {
+        "c1140d5e2a014295b019349670b6f395": {
+          "id": "c1140d5e2a014295b019349670b6f395",
+          "stepType": "Start",
+          "name": "Start",
+          "greetingResponse": {
+            "mode": "simple",
+            "value": ""
+          }
+        },
+        "07ef56f4beb84ea389e95d8edc40905e": {
+          "id": "07ef56f4beb84ea389e95d8edc40905e",
+          "stepType": "TerminateGoal",
+          "name": "End",
+          "confirmationMessage": {
+            "mode": "simple",
+            "value": ""
+          }
+        },
+        "36c320c1c5cf45f1a25cc53de21fe12f": {
+          "id": "36c320c1c5cf45f1a25cc53de21fe12f",
+          "stepType": "TextPrompt",
+          "name": "Ask a question",
+          "prompt": {
+            "value": "(function execute() {\n\n    if(!vaInputs.answer) {\n        return \"Enter your question.\";\n    }\n    else \n        return trim(vaInputs.answer);\n})()",
+            "mode": "script"
+          },
+          "confirmMessage": {
+            "value": "",
+            "mode": "simple"
+          },
+          "acknowledgeMsg": {
+            "value": "",
+            "mode": "simple"
+          },
+          "applicability": {
+            "value": "",
+            "mode": "query"
+          },
+          "skippable": {
+            "value": "",
+            "mode": "query"
+          },
+          "skipReprompt": {
+            "value": "",
+            "mode": "query"
+          },
+          "defaultValue": {
+            "value": "",
+            "mode": "simple"
+          },
+          "withNluUserInput": false,
+          "skipIfFulfilled": false,
+          "variableId": "3869d26eba6c4d1996390b0d549ff56d",
+          "detailDescription": "",
+          "inputType": {
+            "format": "Text",
+            "script": ""
+          },
+          "requestFeedback": true
+        },
+        "38ffabca5db048cb8623d82ab4fd39a3": {
+          "id": "38ffabca5db048cb8623d82ab4fd39a3",
+          "stepType": "Decision",
+          "name": "Decision"
+        },
+        "6a40ce37b76b4321bdf0c4056e43914f": {
+          "id": "6a40ce37b76b4321bdf0c4056e43914f",
+          "name": "askPerplexity",
+          "script": "(function execute() {\n    var message = vaInputs.ask_a_question;\n    vaVars.answer = askPerplexity(message);\n\n        function askPerplexity(message) {\n\n            var r = new sn_ws.RESTMessageV2('askPerplexity', 'POST');\n            r.setStringParameterNoEscape('prompt', message);\n\n            var response = r.execute();\n            var responseBody = response.getBody();\n            var responseObject = JSON.parse(responseBody);\n            var httpStatus = response.getStatusCode();\n            var answer = responseObject.choices[0].text;\n            return answer;\n        }\n})()\n",
+          "stepType": "ScriptAction",
+          "applicability": {
+            "value": "",
+            "mode": "query"
+          }
+        },
+        "efc2834acfdd4922b2a090ca9966d29e": {
+          "id": "efc2834acfdd4922b2a090ca9966d29e",
+          "stepType": "TextOutput",
+          "name": "Perplexity response",
+          "secure": false,
+          "value": [
+            {
+              "value": "(function execute() {\n    vaInputs.answer = \"\";\n    return vaVars.answer;\n})()\n",
+              "mode": "script"
+            }
+          ],
+          "requestFeedback": true,
+          "applicability": {
+            "value": "",
+            "mode": "query"
+          }
+        }
+      },
+      "edges": [
+        {
+          "id": "4247b5816ec04fa48d2843eaf52d3b8d",
+          "edgeType": "Branch",
+          "source": "38ffabca5db048cb8623d82ab4fd39a3",
+          "target": "07ef56f4beb84ea389e95d8edc40905e",
+          "sourcePort": "",
+          "targetPort": "",
+          "expression": {
+            "value": "",
+            "mode": "query"
+          },
+          "label": "Always"
+        },
+        {
+          "id": "ec2010ce4c9f4b139ea265e1edb5a03e",
+          "edgeType": "Edge",
+          "source": "c1140d5e2a014295b019349670b6f395",
+          "target": "36c320c1c5cf45f1a25cc53de21fe12f",
+          "sourcePort": "",
+          "targetPort": ""
+        },
+        {
+          "id": "f94d62d4b0464473867ff5bf11f69e8c",
+          "edgeType": "Edge",
+          "source": "36c320c1c5cf45f1a25cc53de21fe12f",
+          "target": "38ffabca5db048cb8623d82ab4fd39a3",
+          "sourcePort": "",
+          "targetPort": ""
+        },
+        {
+          "id": "b08b91e200d64897bbe1a8c826796c7f",
+          "edgeType": "Branch",
+          "source": "38ffabca5db048cb8623d82ab4fd39a3",
+          "target": "6a40ce37b76b4321bdf0c4056e43914f",
+          "sourcePort": "",
+          "targetPort": "",
+          "expression": {
+            "mode": "query",
+            "value": ""
+          },
+          "label": "Validate User Question"
+        },
+        {
+          "id": "2938fe6ca2a24278bc6d765b8520d861",
+          "edgeType": "Edge",
+          "source": "6a40ce37b76b4321bdf0c4056e43914f",
+          "target": "efc2834acfdd4922b2a090ca9966d29e",
+          "sourcePort": "",
+          "targetPort": ""
+        },
+        {
+          "id": "f2ae4a7b58d646e3843fa04685e8b634",
+          "edgeType": "Edge",
+          "source": "efc2834acfdd4922b2a090ca9966d29e",
+          "target": "36c320c1c5cf45f1a25cc53de21fe12f",
+          "sourcePort": "",
+          "targetPort": ""
+        }
+      ]
+    }
+  },
+  "variables": {
+    "current-user": {
+      "category": "vaInputs",
+      "id": "current-user",
+      "label": "User",
+      "name": "user",
+      "table": "sys_user",
+      "varType": "reference"
+    },
+    "3869d26eba6c4d1996390b0d549ff56d": {
+      "id": "3869d26eba6c4d1996390b0d549ff56d",
+      "name": "ask_a_question",
+      "label": "Ask A Question",
+      "varType": "string",
+      "secure": false,
+      "category": "vaInputs",
+      "encryptionHashFunction": "SHA-256",
+      "encryptionSalt": {
+        "value": "MTc0MjE0OTQ4NTEyNCBWQSBEZXNpZ25lciBpcyBhd2Vzb21l",
+        "mode": "simple"
+      },
+      "nodeId": "36c320c1c5cf45f1a25cc53de21fe12f",
+      "isHidden": false
+    }
+  }
+}</graph>
+        <key_phrases/>
+        <library>true</library>
+        <live_agent>false</live_agent>
+        <model_type>nlu_keyword</model_type>
+        <modify_confirmation_enabled>false</modify_confirmation_enabled>
+        <name>Perplexity</name>
+        <nlu_intent/>
+        <nlu_intent_label/>
+        <nlu_model/>
+        <nlu_model_label/>
+        <nlu_provider/>
+        <palette_label/>
+        <roles/>
+        <root_topic_id/>
+        <secure_custom_input_control>false</secure_custom_input_control>
+        <source_topic_id/>
+        <sys_class_name>sys_cb_topic</sys_class_name>
+        <sys_created_by>admin</sys_created_by>
+        <sys_created_on>2025-03-16 18:24:18</sys_created_on>
+        <sys_domain>global</sys_domain>
+        <sys_id>0bd4d5868358a61094b111b6feaad35a</sys_id>
+        <sys_mod_count>13</sys_mod_count>
+        <sys_name>Perplexity</sys_name>
+        <sys_package display_value="Knowledge 25 Presentation" source="x_1511177_knowle_0">1f56a5f58354661094b111b6feaad35f</sys_package>
+        <sys_policy/>
+        <sys_scope display_value="Knowledge 25 Presentation">1f56a5f58354661094b111b6feaad35f</sys_scope>
+        <sys_update_name>sys_cb_topic_0bd4d5868358a61094b111b6feaad35a</sys_update_name>
+        <sys_updated_by>admin</sys_updated_by>
+        <sys_updated_on>2025-03-16 19:17:40</sys_updated_on>
+        <title>Perplexity</title>
+        <triggerable_by_notification>false</triggerable_by_notification>
+        <type>TOPIC_BLOCK</type>
+    </sys_cb_topic>
+    <sys_translated_text action="DELETE" query="documentkey=0bd4d5868358a61094b111b6feaad35a"/>
+    <sys_update_version action="INSERT_OR_UPDATE">
+        <action>DELETE</action>
+        <application display_value="Knowledge 25 Presentation">1f56a5f58354661094b111b6feaad35f</application>
+        <file_path/>
+        <instance_id>be1609c71bb84a18168f4089bd4bcb71</instance_id>
+        <instance_name>dev240436</instance_name>
+        <name>sys_cb_topic_0bd4d5868358a61094b111b6feaad35a</name>
+        <payload><![CDATA[<?xml version="1.0" encoding="UTF-8"?><record_update sys_domain="global" table="sys_cb_topic"><sys_cb_topic action="INSERT_OR_UPDATE"><applicability/><applicability_mode>query</applicability_mode><autopilot_topic>false</autopilot_topic><category/><channels/><connect_queue/><context_profiles/><description/><dialog_acts_enabled>false</dialog_acts_enabled><expose_on_palette>false</expose_on_palette><flexible_conversation_switching>true</flexible_conversation_switching><foundational>false</foundational><graph>{
+  "graph_api_version": "1.0.74",
+  "goals": {
+    "primary": {
+      "id": "primary",
+      "trigger": {
+        "type": "primary"
+      },
+      "name": "primary",
+      "applicability": "",
+      "description": "",
+      "nodes": {
+        "c1140d5e2a014295b019349670b6f395": {
+          "id": "c1140d5e2a014295b019349670b6f395",
+          "stepType": "Start",
+          "name": "Start",
+          "greetingResponse": {
+            "mode": "simple",
+            "value": ""
+          }
+        },
+        "07ef56f4beb84ea389e95d8edc40905e": {
+          "id": "07ef56f4beb84ea389e95d8edc40905e",
+          "stepType": "TerminateGoal",
+          "name": "End",
+          "confirmationMessage": {
+            "mode": "simple",
+            "value": ""
+          }
+        },
+        "36c320c1c5cf45f1a25cc53de21fe12f": {
+          "id": "36c320c1c5cf45f1a25cc53de21fe12f",
+          "stepType": "TextPrompt",
+          "name": "Ask a question",
+          "prompt": {
+            "value": "(function execute() {\n\n    if(!vaInputs.answer) {\n        return \"Enter your question.\";\n    }\n    else \n        return trim(vaInputs.answer);\n})()",
+            "mode": "script"
+          },
+          "confirmMessage": {
+            "value": "",
+            "mode": "simple"
+          },
+          "acknowledgeMsg": {
+            "value": "",
+            "mode": "simple"
+          },
+          "applicability": {
+            "value": "",
+            "mode": "query"
+          },
+          "skippable": {
+            "value": "",
+            "mode": "query"
+          },
+          "skipReprompt": {
+            "value": "",
+            "mode": "query"
+          },
+          "defaultValue": {
+            "value": "",
+            "mode": "simple"
+          },
+          "withNluUserInput": false,
+          "skipIfFulfilled": false,
+          "variableId": "3869d26eba6c4d1996390b0d549ff56d",
+          "detailDescription": "",
+          "inputType": {
+            "format": "Text",
+            "script": ""
+          },
+          "requestFeedback": true
+        },
+        "38ffabca5db048cb8623d82ab4fd39a3": {
+          "id": "38ffabca5db048cb8623d82ab4fd39a3",
+          "stepType": "Decision",
+          "name": "Decision"
+        },
+        "6a40ce37b76b4321bdf0c4056e43914f": {
+          "id": "6a40ce37b76b4321bdf0c4056e43914f",
+          "name": "askPerplexity",
+          "script": "(function execute() {\n    var message = vaInputs.ask_a_question;\n    vaVars.answer = askPerplexity(message);\n\n        function askPerplexity(message) {\n\n            var r = new sn_ws.RESTMessageV2('askPerplexity', 'POST');\n            r.setStringParameterNoEscape('prompt', message);\n\n            var response = r.execute();\n            var responseBody = response.getBody();\n            var responseObject = JSON.parse(responseBody);\n            var httpStatus = response.getStatusCode();\n            var answer = responseObject.choices[0].text;\n            return answer;\n        }\n})()\n",
+          "stepType": "ScriptAction",
+          "applicability": {
+            "value": "",
+            "mode": "query"
+          }
+        },
+        "efc2834acfdd4922b2a090ca9966d29e": {
+          "id": "efc2834acfdd4922b2a090ca9966d29e",
+          "stepType": "TextOutput",
+          "name": "Perplexity response",
+          "secure": false,
+          "value": [
+            {
+              "value": "(function execute() {\n    vaInputs.answer = \"\";\n    return vaVars.answer;\n})()\n",
+              "mode": "script"
+            }
+          ],
+          "requestFeedback": true,
+          "applicability": {
+            "value": "",
+            "mode": "query"
+          }
+        }
+      },
+      "edges": [
+        {
+          "id": "4247b5816ec04fa48d2843eaf52d3b8d",
+          "edgeType": "Branch",
+          "source": "38ffabca5db048cb8623d82ab4fd39a3",
+          "target": "07ef56f4beb84ea389e95d8edc40905e",
+          "sourcePort": "",
+          "targetPort": "",
+          "expression": {
+            "value": "",
+            "mode": "query"
+          },
+          "label": "Always"
+        },
+        {
+          "id": "ec2010ce4c9f4b139ea265e1edb5a03e",
+          "edgeType": "Edge",
+          "source": "c1140d5e2a014295b019349670b6f395",
+          "target": "36c320c1c5cf45f1a25cc53de21fe12f",
+          "sourcePort": "",
+          "targetPort": ""
+        },
+        {
+          "id": "f94d62d4b0464473867ff5bf11f69e8c",
+          "edgeType": "Edge",
+          "source": "36c320c1c5cf45f1a25cc53de21fe12f",
+          "target": "38ffabca5db048cb8623d82ab4fd39a3",
+          "sourcePort": "",
+          "targetPort": ""
+        },
+        {
+          "id": "b08b91e200d64897bbe1a8c826796c7f",
+          "edgeType": "Branch",
+          "source": "38ffabca5db048cb8623d82ab4fd39a3",
+          "target": "6a40ce37b76b4321bdf0c4056e43914f",
+          "sourcePort": "",
+          "targetPort": "",
+          "expression": {
+            "mode": "query",
+            "value": ""
+          },
+          "label": "Validate User Question"
+        },
+        {
+          "id": "2938fe6ca2a24278bc6d765b8520d861",
+          "edgeType": "Edge",
+          "source": "6a40ce37b76b4321bdf0c4056e43914f",
+          "target": "efc2834acfdd4922b2a090ca9966d29e",
+          "sourcePort": "",
+          "targetPort": ""
+        },
+        {
+          "id": "f2ae4a7b58d646e3843fa04685e8b634",
+          "edgeType": "Edge",
+          "source": "efc2834acfdd4922b2a090ca9966d29e",
+          "target": "36c320c1c5cf45f1a25cc53de21fe12f",
+          "sourcePort": "",
+          "targetPort": ""
+        }
+      ]
+    }
+  },
+  "variables": {
+    "current-user": {
+      "category": "vaInputs",
+      "id": "current-user",
+      "label": "User",
+      "name": "user",
+      "table": "sys_user",
+      "varType": "reference"
+    },
+    "3869d26eba6c4d1996390b0d549ff56d": {
+      "id": "3869d26eba6c4d1996390b0d549ff56d",
+      "name": "ask_a_question",
+      "label": "Ask A Question",
+      "varType": "string",
+      "secure": false,
+      "category": "vaInputs",
+      "encryptionHashFunction": "SHA-256",
+      "encryptionSalt": {
+        "value": "MTc0MjE0OTQ4NTEyNCBWQSBEZXNpZ25lciBpcyBhd2Vzb21l",
+        "mode": "simple"
+      },
+      "nodeId": "36c320c1c5cf45f1a25cc53de21fe12f",
+      "isHidden": false
+    }
+  }
+}</graph><key_phrases/><library>true</library><live_agent>false</live_agent><model_type>nlu_keyword</model_type><modify_confirmation_enabled>false</modify_confirmation_enabled><name>Perplexity</name><nlu_intent/><nlu_intent_label/><nlu_model/><nlu_model_label/><nlu_provider/><palette_label/><roles/><root_topic_id/><secure_custom_input_control>false</secure_custom_input_control><source_topic_id/><sys_class_name>sys_cb_topic</sys_class_name><sys_created_by>admin</sys_created_by><sys_created_on>2025-03-16 18:24:18</sys_created_on><sys_domain>global</sys_domain><sys_id>0bd4d5868358a61094b111b6feaad35a</sys_id><sys_mod_count>13</sys_mod_count><sys_name>Perplexity</sys_name><sys_package display_value="Knowledge 25 Presentation" source="x_1511177_knowle_0">1f56a5f58354661094b111b6feaad35f</sys_package><sys_policy/><sys_scope display_value="Knowledge 25 Presentation">1f56a5f58354661094b111b6feaad35f</sys_scope><sys_update_name>sys_cb_topic_0bd4d5868358a61094b111b6feaad35a</sys_update_name><sys_updated_by>admin</sys_updated_by><sys_updated_on>2025-03-16 19:17:40</sys_updated_on><title>Perplexity</title><triggerable_by_notification>false</triggerable_by_notification><type>TOPIC_BLOCK</type></sys_cb_topic><sys_translated_text action="delete_multiple" query="documentkey=0bd4d5868358a61094b111b6feaad35a"/></record_update>]]></payload>
+        <payload_hash>2126495670</payload_hash>
+        <record_name>Perplexity</record_name>
+        <reverted_from/>
+        <source>e756a5f58354661094b111b6feaad364</source>
+        <source_table>sys_update_set</source_table>
+        <state>previous</state>
+        <sys_created_by>admin</sys_created_by>
+        <sys_created_on>2025-03-16 19:17:40</sys_created_on>
+        <sys_id>78112dc68398a61094b111b6feaad329</sys_id>
+        <sys_mod_count>0</sys_mod_count>
+        <sys_recorded_at>195a063f6af0000001</sys_recorded_at>
+        <sys_updated_by>admin</sys_updated_by>
+        <sys_updated_on>2025-03-16 19:17:40</sys_updated_on>
+        <type>Topic</type>
+        <update_guid>30112dc68598a6106ab213eee8dd2f29</update_guid>
+        <update_guid_history>30112dc68598a6106ab213eee8dd2f29:2126495670,96c0a10ac698a610562196e9c51088e7:1789001828,6850e1c6c798a610df248ad636be1478:860759259,a8efd5865898a610ff8044bcbb8cfcf5:1789001828,2acf9186e698a6105da676f42c36adb4:1740803008,358f55067d98a61007c799a10c5acf11:-722592558,143f5506cc98a610f9c0e4a19a054a43:1789001828,5ace1506fe98a6107373fe56074e05f5:-150669905,774e51c2f798a610164616a52aed09d6:-1451058342,940e91c2cd98a610aff59e35ed039d41:1740803008,667cdd026b98a61073084dc4b56009cd:-722592558,832ad946ec58a6103347437ae014a117:-2051155424,a81ad14ee258a6105ff83b168e97e329:1229914150,43d4d5865558a610d269e930332c905c:-476756421</update_guid_history>
+    </sys_update_version>
+    <sys_metadata_delete action="INSERT_OR_UPDATE">
+        <sys_audit_delete/>
+        <sys_class_name>sys_metadata_delete</sys_class_name>
+        <sys_created_by>admin</sys_created_by>
+        <sys_created_on>2025-03-17 01:25:49</sys_created_on>
+        <sys_db_object display_value="" name="sys_cb_topic">sys_cb_topic</sys_db_object>
+        <sys_id>003c9ab2b377427080e3a7178871c100</sys_id>
+        <sys_metadata>0bd4d5868358a61094b111b6feaad35a</sys_metadata>
+        <sys_mod_count>0</sys_mod_count>
+        <sys_name>Perplexity</sys_name>
+        <sys_package display_value="Knowledge 25 Presentation" source="x_1511177_knowle_0">1f56a5f58354661094b111b6feaad35f</sys_package>
+        <sys_parent/>
+        <sys_policy/>
+        <sys_scope display_value="Knowledge 25 Presentation">1f56a5f58354661094b111b6feaad35f</sys_scope>
+        <sys_scope_delete display_value="">99ae5cc179704286a2629e95ad6e1149</sys_scope_delete>
+        <sys_update_name>sys_cb_topic_0bd4d5868358a61094b111b6feaad35a</sys_update_name>
+        <sys_update_version display_value="sys_cb_topic_0bd4d5868358a61094b111b6feaad35a">78112dc68398a61094b111b6feaad329</sys_update_version>
+        <sys_updated_by>admin</sys_updated_by>
+        <sys_updated_on>2025-03-17 01:25:49</sys_updated_on>
+    </sys_metadata_delete>
+</record_update>

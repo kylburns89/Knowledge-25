@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8"?><record_update table="sys_rest_message_fn">
+    <sys_rest_message_fn action="INSERT_OR_UPDATE">
+        <authentication_type>inherit_from_parent</authentication_type>
+        <basic_auth_password/>
+        <basic_auth_profile/>
+        <basic_auth_user/>
+        <content>{&#13;
+   "model":"meta-llama/Llama-3.3-70B-Instruct-Turbo",&#13;
+   "messages":[&#13;
+      {&#13;
+         "role":"system",&#13;
+         "content":"You are an expert poetry writer who also happens to have a vast knowledge of information technology."&#13;
+      },&#13;
+      {&#13;
+         "role":"user",&#13;
+         "content":"${prompt}"&#13;
+      }&#13;
+   ],&#13;
+   "max_tokens":512,&#13;
+   "temperature":0.7,&#13;
+   "top_p":0.7,&#13;
+   "top_k":50,&#13;
+   "repetition_penalty":1,&#13;
+   "stop":[&#13;
+      "&lt;|eot_id|&gt;",&#13;
+      "&lt;|eom_id|&gt;"&#13;
+   ]&#13;
+}</content>
+        <function_name>generate_haiku</function_name>
+        <http_method>post</http_method>
+        <lock>false</lock>
+        <oauth2_profile/>
+        <protocol_name/>
+        <qualified_name>Together.ai [ generate_haiku ]</qualified_name>
+        <rest_endpoint>https://api.together.xyz/v1/chat/completions</rest_endpoint>
+        <rest_message display_value="Together.ai">e89721798354661094b111b6feaad3c0</rest_message>
+        <sys_class_name>sys_rest_message_fn</sys_class_name>
+        <sys_created_by>admin</sys_created_by>
+        <sys_created_on>2025-03-16 01:08:33</sys_created_on>
+        <sys_id>31b725798354661094b111b6feaad364</sys_id>
+        <sys_mod_count>3</sys_mod_count>
+        <sys_name>generate_haiku</sys_name>
+        <sys_package display_value="Knowledge 25 Presentation" source="x_1511177_knowle_0">1f56a5f58354661094b111b6feaad35f</sys_package>
+        <sys_policy/>
+        <sys_scope display_value="Knowledge 25 Presentation">1f56a5f58354661094b111b6feaad35f</sys_scope>
+        <sys_update_name>sys_rest_message_fn_31b725798354661094b111b6feaad364</sys_update_name>
+        <sys_updated_by>admin</sys_updated_by>
+        <sys_updated_on>2025-03-16 01:22:51</sys_updated_on>
+        <use_basic_auth>false</use_basic_auth>
+        <use_mid_server/>
+        <use_mutual_auth>false</use_mutual_auth>
+    </sys_rest_message_fn>
+</record_update>

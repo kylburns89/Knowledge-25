@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?><record_update table="sys_rest_message_fn_parameters">
+    <sys_rest_message_fn_parameters action="INSERT_OR_UPDATE">
+        <name>apiKey</name>
+        <rest_message_function display_value="POST">68ee090a83d4a61094b111b6feaad30e</rest_message_function>
+        <sys_class_name>sys_rest_message_fn_parameters</sys_class_name>
+        <sys_created_by>admin</sys_created_by>
+        <sys_created_on>2025-03-16 18:01:46</sys_created_on>
+        <sys_id>74bfcdc683d4a61094b111b6feaad3d4</sys_id>
+        <sys_mod_count>2</sys_mod_count>
+        <sys_name>apiKey</sys_name>
+        <sys_package display_value="Knowledge 25 Presentation" source="x_1511177_knowle_0">1f56a5f58354661094b111b6feaad35f</sys_package>
+        <sys_policy/>
+        <sys_scope display_value="Knowledge 25 Presentation">1f56a5f58354661094b111b6feaad35f</sys_scope>
+        <sys_update_name>sys_rest_message_fn_parameters_74bfcdc683d4a61094b111b6feaad3d4</sys_update_name>
+        <sys_updated_by>admin</sys_updated_by>
+        <sys_updated_on>2025-03-16 18:10:51</sys_updated_on>
+        <type>string</type>
+        <value>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</value>
+    </sys_rest_message_fn_parameters>
+</record_update>

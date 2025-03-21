@@ -1,0 +1,308 @@
+<?xml version="1.0" encoding="UTF-8"?><record_update sys_domain="global" table="sys_cb_topic">
+    <sys_cb_topic action="INSERT_OR_UPDATE">
+        <applicability/>
+        <applicability_mode>query</applicability_mode>
+        <autopilot_topic>false</autopilot_topic>
+        <category/>
+        <channels/>
+        <connect_queue/>
+        <context_profiles/>
+        <description/>
+        <dialog_acts_enabled>false</dialog_acts_enabled>
+        <expose_on_palette>false</expose_on_palette>
+        <flexible_conversation_switching>false</flexible_conversation_switching>
+        <foundational>false</foundational>
+        <graph>{
+  "graph_api_version": "1.0.74",
+  "goals": {
+    "primary": {
+      "id": "primary",
+      "trigger": {
+        "type": "primary"
+      },
+      "name": "primary",
+      "applicability": "",
+      "description": "",
+      "nodes": {
+        "ad4c9e52b2674e2b8b350f723ee4529a": {
+          "id": "ad4c9e52b2674e2b8b350f723ee4529a",
+          "stepType": "Start",
+          "name": "Start",
+          "greetingResponse": {
+            "mode": "simple",
+            "value": ""
+          }
+        },
+        "686dac2a886f438b933c739adc3c6102": {
+          "id": "686dac2a886f438b933c739adc3c6102",
+          "stepType": "TerminateGoal",
+          "name": "End",
+          "confirmationMessage": {
+            "mode": "simple",
+            "value": ""
+          }
+        },
+        "01c4d0f65ff84be9b18b9b8dd0c2e31d": {
+          "id": "01c4d0f65ff84be9b18b9b8dd0c2e31d",
+          "stepType": "TextPrompt",
+          "name": "Ask a question",
+          "prompt": {
+            "value": [
+              {
+                "type": "paragraph",
+                "children": [
+                  {
+                    "text": "Ask a question"
+                  }
+                ]
+              }
+            ],
+            "mode": "simple"
+          },
+          "confirmMessage": {
+            "value": "",
+            "mode": "simple"
+          },
+          "acknowledgeMsg": {
+            "value": "",
+            "mode": "simple"
+          },
+          "applicability": {
+            "value": "",
+            "mode": "query"
+          },
+          "skippable": {
+            "value": "",
+            "mode": "query"
+          },
+          "skipReprompt": {
+            "value": "",
+            "mode": "query"
+          },
+          "defaultValue": {
+            "value": "",
+            "mode": "simple"
+          },
+          "withNluUserInput": false,
+          "skipIfFulfilled": false,
+          "variableId": "62079c73d62f48e1abcd5bdf6c3702c8",
+          "detailDescription": "",
+          "inputType": {
+            "format": "Text",
+            "script": ""
+          },
+          "requestFeedback": true
+        },
+        "eeedef82cf5a4ac28ac13adc00c452c2": {
+          "id": "eeedef82cf5a4ac28ac13adc00c452c2",
+          "stepType": "ScriptOutput",
+          "name": "Get response",
+          "output_type": "single_part",
+          "script": "(function execute() {\n\n var r = new sn_ws.RESTMessageV2('x_1511177_knowle_0.Together.ai', 'celebrity_impersonation');\n r.setStringParameterNoEscape('apiKey', 'cbaecbd8165dca91f680319fc7396cfe60b380fd402c11f943faf5f667f4f797');\n r.setStringParameterNoEscape('prompt', vaInputs.ask_a_question);\n r.setStringParameterNoEscape('celebrity', 'Bugs bunny');\n \n    var response = r.execute();\n    var responseBody = response.getBody();\n    var httpStatus = response.getStatusCode();\n    var perplexResponse = JSON.parse(responseBody);\n    // Extract the content and format with citations\n    var formattedAnswer = \"\";\n    \n    try {\n        // Get the message content\n        var content = perplexResponse.choices[0].message.content;\n        \n        // Get the citation links\n        var citations = perplexResponse.citations || [];\n        \n        // Format the answer with the content\n        formattedAnswer = content;\n        \n        // Add formatted citations as hyperlinks if they exist\n        if (citations.length &gt; 0) {\n            formattedAnswer += \"\\n\\n**Sources:**\\n\";\n            \n            for (var i = 0; i &lt; citations.length; i++) {\n                // Create numbered hyperlinks for each citation\n                // ServiceNow uses markdown-like format for hyperlinks: [text](url)\n                formattedAnswer += \"[\" + (i + 1) + \"] [\" + citations[i] + \"](\" + citations[i] + \")\\n\";\n            }\n        }\n    } catch (e) {\n        // Handle any parsing errors\n        formattedAnswer = \"Sorry, I couldn't process that response properly. Error: \" + e.message;\n    }\n    \n    return formattedAnswer;\n\n})()\n   ",
+          "applicability": {
+            "value": "",
+            "mode": "query"
+          }
+        },
+        "4a1f71c060544fc5b887c041507f182f": {
+          "id": "4a1f71c060544fc5b887c041507f182f",
+          "stepType": "Decision",
+          "name": "Decision"
+        },
+        "37a098d8fc194b49b20450a0b6014352": {
+          "name": "Question answered?",
+          "prompt": {
+            "value": [
+              {
+                "type": "paragraph",
+                "children": [
+                  {
+                    "text": "Have you received the information you were seeking, or would you like me to connect you with a live agent?"
+                  }
+                ]
+              }
+            ],
+            "mode": "simple"
+          },
+          "confirmMessage": {
+            "value": "",
+            "mode": "simple"
+          },
+          "acknowledgeMsg": {
+            "value": "",
+            "mode": "simple"
+          },
+          "applicability": {
+            "value": "",
+            "mode": "query"
+          },
+          "skippable": {
+            "value": "",
+            "mode": "query"
+          },
+          "skipReprompt": {
+            "value": "",
+            "mode": "query"
+          },
+          "defaultValue": {
+            "value": "",
+            "mode": "simple"
+          },
+          "variableId": "e68ce10c92564a8fafdae968e1ed8dc8",
+          "detailDescription": "",
+          "id": "37a098d8fc194b49b20450a0b6014352",
+          "stepType": "ChoicePrompt",
+          "hasCardHeader": false,
+          "cardMetadata": {
+            "mode": "card",
+            "metadataScript": "",
+            "cardTemplate": "",
+            "cardFields": {},
+            "cardDefinition": {}
+          },
+          "withNluUserInput": false,
+          "skipIfFulfilled": false
+        }
+      },
+      "edges": [
+        {
+          "id": "9e1060fcc85b4aa081eb8a79daa610e3",
+          "edgeType": "Branch",
+          "source": "4a1f71c060544fc5b887c041507f182f",
+          "target": "686dac2a886f438b933c739adc3c6102",
+          "sourcePort": "",
+          "targetPort": "",
+          "expression": {
+            "value": "",
+            "mode": "query"
+          },
+          "label": "Yes"
+        },
+        {
+          "id": "8dad8c1a68c842c6b16d8ee08baf2fe3",
+          "edgeType": "Edge",
+          "source": "ad4c9e52b2674e2b8b350f723ee4529a",
+          "target": "01c4d0f65ff84be9b18b9b8dd0c2e31d",
+          "sourcePort": "",
+          "targetPort": ""
+        },
+        {
+          "id": "70332fad27434e1aa13928c8ab5dde64",
+          "edgeType": "Edge",
+          "source": "01c4d0f65ff84be9b18b9b8dd0c2e31d",
+          "target": "eeedef82cf5a4ac28ac13adc00c452c2",
+          "sourcePort": "",
+          "targetPort": ""
+        },
+        {
+          "id": "78d8e3116f0b4b6381beb2df8f929e47",
+          "edgeType": "Branch",
+          "source": "4a1f71c060544fc5b887c041507f182f",
+          "target": "01c4d0f65ff84be9b18b9b8dd0c2e31d",
+          "sourcePort": "",
+          "targetPort": "",
+          "expression": {
+            "value": "vaInputs.question_answered_=No",
+            "mode": "query"
+          },
+          "label": "No"
+        },
+        {
+          "id": "5f5d00a26a384c02afa1b57009178bad",
+          "edgeType": "Edge",
+          "source": "eeedef82cf5a4ac28ac13adc00c452c2",
+          "target": "37a098d8fc194b49b20450a0b6014352",
+          "sourcePort": "",
+          "targetPort": ""
+        },
+        {
+          "id": "eb7f1a103fbb4ae2bfdb7661dbd7fe9f",
+          "edgeType": "Edge",
+          "source": "37a098d8fc194b49b20450a0b6014352",
+          "target": "4a1f71c060544fc5b887c041507f182f",
+          "sourcePort": "",
+          "targetPort": ""
+        }
+      ]
+    }
+  },
+  "variables": {
+    "current-user": {
+      "category": "vaInputs",
+      "id": "current-user",
+      "label": "User",
+      "name": "user",
+      "table": "sys_user",
+      "varType": "reference"
+    },
+    "62079c73d62f48e1abcd5bdf6c3702c8": {
+      "id": "62079c73d62f48e1abcd5bdf6c3702c8",
+      "name": "ask_a_question",
+      "label": "Ask A Question",
+      "varType": "string",
+      "secure": false,
+      "category": "vaInputs",
+      "encryptionHashFunction": "SHA-256",
+      "encryptionSalt": {
+        "value": "MTc0MjI1NTMyOTI0MiBWQSBEZXNpZ25lciBpcyBhd2Vzb21l",
+        "mode": "simple"
+      },
+      "nodeId": "01c4d0f65ff84be9b18b9b8dd0c2e31d",
+      "isHidden": false
+    },
+    "e68ce10c92564a8fafdae968e1ed8dc8": {
+      "id": "e68ce10c92564a8fafdae968e1ed8dc8",
+      "name": "question_answered_",
+      "label": "Question Answered?",
+      "varType": "choice",
+      "choices": [
+        {
+          "label": "Yes",
+          "value": "Yes"
+        },
+        {
+          "label": "No",
+          "value": "No"
+        }
+      ],
+      "category": "vaInputs",
+      "nodeId": "37a098d8fc194b49b20450a0b6014352",
+      "isHidden": false
+    }
+  }
+}</graph>
+        <key_phrases>Celebrity Impersonator</key_phrases>
+        <library>false</library>
+        <live_agent>false</live_agent>
+        <model_type>nlu_keyword</model_type>
+        <modify_confirmation_enabled>false</modify_confirmation_enabled>
+        <name>Celebrity Impersonator</name>
+        <nlu_intent/>
+        <nlu_intent_label/>
+        <nlu_model/>
+        <nlu_model_label/>
+        <nlu_provider/>
+        <palette_label/>
+        <roles/>
+        <root_topic_id/>
+        <secure_custom_input_control>false</secure_custom_input_control>
+        <source_topic_id/>
+        <sys_class_name>sys_cb_topic</sys_class_name>
+        <sys_created_by>admin</sys_created_by>
+        <sys_created_on>2025-03-17 23:46:16</sys_created_on>
+        <sys_domain>global</sys_domain>
+        <sys_id>c52863d2831c2a1094b111b6feaad30c</sys_id>
+        <sys_mod_count>2</sys_mod_count>
+        <sys_name>Celebrity Impersonator</sys_name>
+        <sys_package display_value="Knowledge 25 Presentation" source="x_1511177_knowle_0">1f56a5f58354661094b111b6feaad35f</sys_package>
+        <sys_policy/>
+        <sys_scope display_value="Knowledge 25 Presentation">1f56a5f58354661094b111b6feaad35f</sys_scope>
+        <sys_update_name>sys_cb_topic_c52863d2831c2a1094b111b6feaad30c</sys_update_name>
+        <sys_updated_by>admin</sys_updated_by>
+        <sys_updated_on>2025-03-18 00:05:02</sys_updated_on>
+        <title>Celebrity Impersonator</title>
+        <triggerable_by_notification>false</triggerable_by_notification>
+        <type>STANDARD</type>
+    </sys_cb_topic>
+    <sys_translated_text action="delete_multiple" query="documentkey=c52863d2831c2a1094b111b6feaad30c"/>
+</record_update>
