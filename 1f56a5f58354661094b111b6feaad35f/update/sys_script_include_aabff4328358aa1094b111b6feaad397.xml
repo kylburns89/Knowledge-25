@@ -2,122 +2,69 @@
     <sys_script_include action="INSERT_OR_UPDATE">
         <access>package_private</access>
         <active>true</active>
-        <api_name>x_1511177_knowle_0.OpenAINewsAPI</api_name>
+        <api_name>x_1511177_knowle_0.NewsAPILoader</api_name>
         <caller_access/>
         <client_callable>true</client_callable>
         <description>Handles communication with OpenAI API for news retrieval</description>
         <mobile_callable>false</mobile_callable>
-        <name>OpenAINewsAPI</name>
+        <name>NewsAPILoader</name>
         <sandbox_callable>false</sandbox_callable>
-        <script><![CDATA[var OpenAINewsAPI = Class.create();
-OpenAINewsAPI.prototype = {
-    initialize: function() {
-    },
-    
-    getNewsForTopic: function(topic) {
+        <script><![CDATA[var NewsAPILoader = Class.create();
+NewsAPILoader.prototype = Object.extendsObject(AbstractAjaxProcessor, {
+    loadNews: function() {
+        var result = {};
+        
         try {
-            gs.info('Starting news fetch for topic: ' + topic, 'OpenAINewsAPI');
+            var useDemoData = this.getParameter('use_demo') === 'true';
             
-            // Get API key from system property
-            var apiKey = gs.getProperty('x_1511177_knowle_0.openai.api.key');
-            if (!apiKey) {
-                gs.info('ERROR: OpenAI API key not configured', 'OpenAINewsAPI');
-                return 'error: api_key_missing';
-            }
+            // Call your widget's server script to fetch news
+            // This is a simplified example - you'd need to implement the actual data fetching
             
-            // Set up request to OpenAI
-            try {
-                var request = new sn_ws.RESTMessageV2('OpenAI', 'get_news');
-                request.setRequestHeader('Content-Type', 'application/json');
-                request.setRequestHeader('Authorization', 'Bearer ' + apiKey);
-            } catch (ex) {
-                gs.info('ERROR creating REST Message: ' + ex, 'OpenAINewsAPI');
-                return 'error: rest_message_creation_failed';
-            }
-            
-            // Create the payload for OpenAI
-            var payload = {
-                model: "gpt-4o-search-preview",
-                web_search_options: {
-                    search_context_size: "medium"
-                },
-                messages: [{
-                    role: "user",
-                    content: "Find 5 recent news articles about " + topic + ". For each, provide a title, short summary, source name, and URL. Format as JSON only, no markdown or explanations."
-                }]
-            };
-            
-            request.setRequestBody(JSON.stringify(payload));
-            
-            // Send request to OpenAI
-            try {
-                gs.info('Executing request to OpenAI...', 'OpenAINewsAPI');
-                var response = request.execute();
-                var httpStatus = response.getStatusCode();
-                gs.info('Response received with status code: ' + httpStatus, 'OpenAINewsAPI');
-            } catch (ex) {
-                gs.info('ERROR executing request: ' + ex, 'OpenAINewsAPI');
-                return 'error: request_execution_failed';
-            }
-            
-            if (httpStatus == 200) {
-                try {
-                    var responseBody = response.getBody();
-                    var result = JSON.parse(responseBody);
-                    
-                    // Parse the content from OpenAI
-                    if (result.choices && result.choices.length > 0 && 
-                        result.choices[0].message && result.choices[0].message.content) {
-                        
-                        var content = result.choices[0].message.content;
-                        gs.info('Raw content from OpenAI: ' + content.substring(0, 100) + '...', 'OpenAINewsAPI');
-                        
-                        // Check if content is markdown-formatted JSON and extract it
-                        var jsonStr = content;
-                        if (content.indexOf('```json') > -1) {
-                            jsonStr = content.replace(/```json\n|\n```/g, '');
-                            gs.info('Extracted JSON from markdown', 'OpenAINewsAPI');
-                        }
-                        
-                        try {
-                            var newsItems = JSON.parse(jsonStr);
-                            gs.info('Successfully parsed OpenAI response as JSON with ' + newsItems.length + ' items', 'OpenAINewsAPI');
-                            return JSON.stringify(newsItems);
-                        } catch (e) {
-                            gs.info('Failed to parse JSON: ' + e + '. Content: ' + jsonStr.substring(0, 100), 'OpenAINewsAPI');
-                            return 'error: json_parse_failed';
-                        }
-                    } else {
-                        gs.info('ERROR: Missing content in OpenAI response', 'OpenAINewsAPI');
-                        return 'error: missing_content';
-                    }
-                } catch (e) {
-                    gs.info('ERROR processing response: ' + e, 'OpenAINewsAPI');
-                    return 'error: response_processing_failed';
-                }
+            if (useDemoData) {
+                result.newsItem = {
+                    title: "ServiceNow Releases Tokyo Platform Update",
+                    summary: "The latest platform update includes AI-powered features for IT Service Management and improved automation capabilities for IT operations.",
+                    source: "ServiceNow Blog",
+                    url: "javascript:void(0)",
+                    publishDate: new GlideDateTime().getDisplayValue(),
+                    imageUrl: "news_default.jpg"
+                };
             } else {
-                gs.info('ERROR: Failed to get successful response from OpenAI: ' + httpStatus, 'OpenAINewsAPI');
-                return 'error: bad_http_status_' + httpStatus;
+                // Call your API here to get real news
+                // For now, use demo data
+                result.newsItem = {
+                    title: "ServiceNow Releases Tokyo Platform Update",
+                    summary: "The latest platform update includes AI-powered features for IT Service Management and improved automation capabilities for IT operations.",
+                    source: "ServiceNow Blog",
+                    url: "javascript:void(0)",
+                    publishDate: new GlideDateTime().getDisplayValue(),
+                    imageUrl: "news_default.jpg"
+                };
             }
-        } catch (ex) {
-            gs.info('CRITICAL ERROR in OpenAINewsAPI: ' + ex, 'OpenAINewsAPI');
-            return 'error: general_exception';
+            
+            result.success = true;
+            
+        } catch (e) {
+            result.success = false;
+            result.error = e.message || 'Unknown error occurred';
         }
+        
+        return JSON.stringify(result);
     },
     
-    type: 'OpenAINewsAPI'
-};]]></script>
+    type: 'NewsAPILoader'
+});]]></script>
         <sys_class_name>sys_script_include</sys_class_name>
         <sys_created_by>admin</sys_created_by>
         <sys_created_on>2025-03-19 00:49:06</sys_created_on>
         <sys_id>aabff4328358aa1094b111b6feaad397</sys_id>
-        <sys_mod_count>6</sys_mod_count>
-        <sys_name>OpenAINewsAPI</sys_name>
+        <sys_mod_count>7</sys_mod_count>
+        <sys_name>NewsAPILoader</sys_name>
         <sys_package display_value="Knowledge 25 Presentation" source="x_1511177_knowle_0">1f56a5f58354661094b111b6feaad35f</sys_package>
         <sys_policy>read</sys_policy>
         <sys_scope display_value="Knowledge 25 Presentation">1f56a5f58354661094b111b6feaad35f</sys_scope>
         <sys_update_name>sys_script_include_aabff4328358aa1094b111b6feaad397</sys_update_name>
         <sys_updated_by>admin</sys_updated_by>
-        <sys_updated_on>2025-03-19 02:19:59</sys_updated_on>
+        <sys_updated_on>2025-03-21 23:59:36</sys_updated_on>
     </sys_script_include>
 </record_update>

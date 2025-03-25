@@ -1,191 +1,678 @@
 <?xml version="1.0" encoding="UTF-8"?><record_update table="sp_widget">
     <sp_widget action="INSERT_OR_UPDATE">
         <category>custom</category>
-        <client_script><![CDATA[api.controller = function($scope, $http) {
-    // Basic variables
-    $scope.topics = ['Technology', 'Science', 'Business'];
-    $scope.topicIndex = 0;
-    $scope.topic = $scope.topics[0];
-    $scope.news = {
-        title: 'Initializing...',
-        content: 'Please wait while we fetch news.',
-        source: 'System'
-    };
-    $scope.newsItems = [];
-    $scope.newsIndex = 0;
-    $scope.loading = false;
-    
-    // Logging helper
-    function log(msg) {
-        gs.info("NewsWidget: " + msg);
+        <client_script><![CDATA[api.controller = function($scope, $timeout, spModal, spUtil) {
+  var c = this;
+  
+  // Initialize news data in client controller
+  c.newsItem = null;
+  c.loading = false;
+  c.error = null;
+  c.newsLoaded = false;
+  
+  // Initialize debug messages
+  $scope.debugMessages = [];
+  
+  // Debug log function
+  function debugLog(message) {
+    console.log('[ServiceNow News Summary] ' + message);
+    $scope.debugMessages.push(new Date().toISOString() + ': ' + message);
+  }
+  
+  // Safely apply scope changes
+  function safeApply(fn) {
+    var phase = $scope.$root.$$phase;
+    if (phase == '$apply' || phase == '$digest') {
+      if (fn && typeof fn === 'function') {
+        fn();
+      }
+    } else {
+      $scope.$apply(fn);
+    }
+  }
+  
+  // Load news using GlideAjax
+  c.loadNewsAjax = function(isDebug) {
+    if (c.loading) {
+      debugLog('Already loading news, ignoring request');
+      return;
     }
     
-    // Initialize - fetch first topic news
-    $scope.fetchNews = function() {
-        $scope.loading = true;
-        log("Fetching news for " + $scope.topic);
+    debugLog('Loading ServiceNow news via GlideAjax');
+    c.loading = true;
+    
+    // Create a GlideAjax instance
+    var ga = new GlideAjax('NewsAPILoader');
+    ga.addParam('sysparm_name', 'loadNews');
+    ga.addParam('use_demo', c.data.isDemoMode ? 'true' : 'false');
+    
+    if (isDebug) {
+      ga.addParam('debug', 'true');
+    }
+    
+    debugLog('GlideAjax request sent');
+    
+    // Using try-catch to handle GlideAjax exceptions
+    try {
+      ga.getXMLAnswer(function(response) {
+        debugLog('GlideAjax response received, length: ' + (response ? response.length : 0));
         
-        // Directly set a dummy news item for testing
-        $scope.newsItems = [
-            {
-                title: 'Client: News about ' + $scope.topic,
-                content: 'This is a client-generated news item for testing purpose.',
-                source: 'Test Source'
-            }
-        ];
-        $scope.news = $scope.newsItems[0];
-        
-        // Now try to get server data
-        $scope.server.get({
-            action: 'getNewsForTopic',
-            topic: $scope.topic
-        }).then(function(response) {
-            log("Got server response: " + JSON.stringify(response));
-            $scope.loading = false;
+        // Use $timeout to safely update the scope outside of current digest cycle
+        $timeout(function() {
+          try {
+            var result = JSON.parse(response);
             
-            if (response && response.newsItems && response.newsItems.length > 0) {
-                log("Successfully got " + response.newsItems.length + " items from server");
-                $scope.newsItems = response.newsItems;
-                $scope.newsIndex = 0;
-                $scope.news = $scope.newsItems[0];
+            if (result.success) {
+              // Update with the single news item
+              c.newsItem = result.newsItem || null;
+              c.error = null;
+              c.newsLoaded = true;
+              
+              debugLog('Successfully loaded news item');
             } else {
-                log("No valid news items in response");
-                // Keep the client-side dummy news item
+              c.error = result.error || 'Failed to load news';
+              c.newsItem = null;
+              
+              debugLog('Error loading news: ' + c.error);
             }
-        }, function(error) {
-            log("Error from server: " + error);
-            $scope.loading = false;
-            // Keep the client-side dummy news item
+          } catch (e) {
+            c.error = 'Error processing response: ' + e.message;
+            c.newsItem = null;
+            
+            debugLog('Error parsing response: ' + e.message);
+          }
+          
+          c.loading = false;
         });
-    };
+      });
+    } catch (ex) {
+      // Handle any exceptions in the GlideAjax call itself
+      $timeout(function() {
+        c.error = 'Error calling server: ' + ex.message;
+        c.loading = false;
+        c.newsItem = null;
+        debugLog('GlideAjax exception: ' + ex.message);
+      });
+    }
+  };
+  
+  // Apply theme color class
+  c.getThemeClass = function() {
+    return 'theme-' + (c.data.themeColor || 'default');
+  };
+  
+  // Format dates in a readable way
+  c.formatDate = function(dateString) {
+    if (!dateString) return '';
     
-    // Navigation functions
-    $scope.next = function() {
-        $scope.topicIndex = ($scope.topicIndex + 1) % $scope.topics.length;
-        $scope.topic = $scope.topics[$scope.topicIndex];
-        $scope.fetchNews();
-    };
-    
-    $scope.prev = function() {
-        $scope.topicIndex = ($scope.topicIndex - 1 + $scope.topics.length) % $scope.topics.length;
-        $scope.topic = $scope.topics[$scope.topicIndex];
-        $scope.fetchNews();
-    };
-    
-    $scope.nextNews = function() {
-        if ($scope.newsItems.length > 1) {
-            $scope.newsIndex = ($scope.newsIndex + 1) % $scope.newsItems.length;
-            $scope.news = $scope.newsItems[$scope.newsIndex];
-        }
-    };
-    
-    $scope.prevNews = function() {
-        if ($scope.newsItems.length > 1) {
-            $scope.newsIndex = ($scope.newsIndex - 1 + $scope.newsItems.length) % $scope.newsItems.length;
-            $scope.news = $scope.newsItems[$scope.newsIndex];
-        }
-    };
-    
-    $scope.refresh = function() {
-        $scope.fetchNews();
-    };
-    
-    // Initial fetch
-    $scope.fetchNews();
+    try {
+      // Handle ISO date strings
+      var date = new Date(dateString);
+      
+      // If parsing fails, return the original string
+      if (isNaN(date.getTime())) {
+        return dateString;
+      }
+      
+      var now = new Date();
+      
+      // Format the date string
+      if (now.toDateString() === date.toDateString()) {
+        // Today, show the time
+        return 'Today, ' + date.toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'});
+      } else if (now.getFullYear() === date.getFullYear()) {
+        // This year, show the month and day
+        return date.toLocaleDateString([], {month: 'short', day: 'numeric'});
+      } else {
+        // Different year, show the full date
+        return date.toLocaleDateString([], {year: 'numeric', month: 'short', day: 'numeric'});
+      }
+    } catch(e) {
+      console.error('Error formatting date:', e);
+      return dateString;
+    }
+  };
+  
+  // Load demo data automatically if in demo mode
+  if (c.data.isDemoMode) {
+    debugLog('In demo mode, loading news automatically');
+    $timeout(function() {
+      c.loadNewsAjax();
+    });
+  }
+  
+  // Clean up on scope destroy
+  $scope.$on('$destroy', function() {
+    debugLog('Widget destroyed, cleanup complete');
+  });
+  
+  debugLog('Client controller initialized');
 };]]></client_script>
         <controller_as>c</controller_as>
-        <css>.panel {&#13;
+        <css>.sn-news-widget {&#13;
+  background-color: #ffffff;&#13;
+  border-radius: 8px;&#13;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.08);&#13;
   margin-bottom: 20px;&#13;
+  overflow: hidden;&#13;
+  font-family: 'Source Sans Pro', 'Helvetica Neue', Helvetica, Arial, sans-serif;&#13;
 }&#13;
-.panel-heading {&#13;
-  padding: 10px 15px;&#13;
+&#13;
+.sn-news-header {&#13;
+  padding: 16px 20px;&#13;
+  border-bottom: 1px solid #e8e8e8;&#13;
+  display: flex;&#13;
+  flex-wrap: wrap;&#13;
+  align-items: center;&#13;
+  position: relative;&#13;
 }&#13;
-.panel-body {&#13;
-  padding: 15px;&#13;
+&#13;
+.sn-news-title {&#13;
+  color: #333333;&#13;
+  font-size: 18px;&#13;
+  font-weight: 600;&#13;
+  margin: 0;&#13;
+  margin-right: auto;&#13;
+}&#13;
+&#13;
+.sn-news-subtitle {&#13;
+  color: #666666;&#13;
+  font-size: 14px;&#13;
+  margin: 8px 0 0;&#13;
+  width: 100%;&#13;
+}&#13;
+&#13;
+.sn-news-actions {&#13;
+  margin-left: auto;&#13;
+}&#13;
+&#13;
+.sn-news-loading,&#13;
+.sn-news-error,&#13;
+.sn-news-empty {&#13;
+  padding: 40px 20px;&#13;
+  text-align: center;&#13;
+  color: #666666;&#13;
+}&#13;
+&#13;
+.sn-news-loading .fa,&#13;
+.sn-news-error .fa,&#13;
+.sn-news-empty .fa {&#13;
+  font-size: 32px;&#13;
+  margin-bottom: 8px;&#13;
+  display: block;&#13;
+  color: #81B5A1;&#13;
+}&#13;
+&#13;
+.sn-news-error .fa {&#13;
+  color: #ff6b6b;&#13;
+}&#13;
+&#13;
+.sn-news-content {&#13;
+  padding: 0;&#13;
+}&#13;
+&#13;
+.sn-news-articles {&#13;
+  max-height: 600px;&#13;
+  overflow-y: auto;&#13;
+}&#13;
+&#13;
+.sn-news-article {&#13;
+  padding: 20px;&#13;
+  border-bottom: 1px solid #e8e8e8;&#13;
+  transition: background-color 0.2s ease;&#13;
+}&#13;
+&#13;
+.sn-news-article:hover {&#13;
+  background-color: #f8f8f8;&#13;
+}&#13;
+&#13;
+.sn-news-article:last-child {&#13;
+  border-bottom: none;&#13;
+}&#13;
+&#13;
+.sn-news-article-title {&#13;
+  font-size: 16px;&#13;
+  font-weight: 600;&#13;
+  margin: 0 0 8px;&#13;
+  line-height: 1.4;&#13;
+}&#13;
+&#13;
+.sn-news-article-title a {&#13;
+  color: #0050D0;&#13;
+  text-decoration: none;&#13;
+}&#13;
+&#13;
+.sn-news-article-title a:hover {&#13;
+  text-decoration: underline;&#13;
+}&#13;
+&#13;
+.sn-news-article-date {&#13;
+  color: #666666;&#13;
+  font-size: 12px;&#13;
+  margin: 0 0 12px;&#13;
+}&#13;
+&#13;
+.sn-news-article-summary {&#13;
+  color: #333333;&#13;
+  font-size: 14px;&#13;
+  line-height: 1.5;&#13;
+  margin: 0 0 12px;&#13;
+}&#13;
+&#13;
+.sn-news-article-link {&#13;
+  color: #0050D0;&#13;
+  font-size: 14px;&#13;
+  font-weight: 600;&#13;
+  text-decoration: none;&#13;
+  display: inline-block;&#13;
+}&#13;
+&#13;
+.sn-news-article-link:hover {&#13;
+  text-decoration: underline;&#13;
+}&#13;
+&#13;
+.sn-news-footer {&#13;
+  padding: 12px 20px;&#13;
+  border-top: 1px solid #e8e8e8;&#13;
+  background-color: #f8f8f8;&#13;
+}&#13;
+&#13;
+.sn-news-timestamp {&#13;
+  color: #666666;&#13;
+  font-size: 12px;&#13;
+  margin: 0;&#13;
+  text-align: right;&#13;
 }</css>
         <data_table>sp_instance</data_table>
         <demo_data/>
-        <description>Displays rotating news based on user topic preferences using OpenAI's web search</description>
+        <description>Displays the latest ServiceNow news using OpenAI web search</description>
         <docs/>
         <field_list/>
         <has_preview>true</has_preview>
-        <id>openai-news-widget</id>
+        <id>servicenow-news-widget</id>
         <internal>false</internal>
         <link><![CDATA[function link(scope, element, attrs, controller) {
   
 }]]></link>
-        <name>OpenAI News Widget</name>
-        <option_schema/>
+        <name>ServiceNow News Widget</name>
+        <option_schema>[&#13;
+  {&#13;
+    "name": "title",&#13;
+    "section": "Presentation",&#13;
+    "default_value": "ServiceNow News Summary",&#13;
+    "label": "Widget Title",&#13;
+    "type": "string"&#13;
+  },&#13;
+  {&#13;
+    "name": "use_demo_data",&#13;
+    "section": "Development",&#13;
+    "default_value": "true",&#13;
+    "label": "Use Demo Data (Testing Only)",&#13;
+    "type": "boolean"&#13;
+  },&#13;
+  {&#13;
+    "name": "show_debug",&#13;
+    "section": "Development",&#13;
+    "default_value": "false",&#13;
+    "label": "Show Debug Information",&#13;
+    "type": "boolean"&#13;
+  },&#13;
+  {&#13;
+    "name": "theme_color",&#13;
+    "section": "Presentation",&#13;
+    "default_value": "default",&#13;
+    "label": "Theme Color",&#13;
+    "type": "choice",&#13;
+    "choices": [&#13;
+      {&#13;
+        "label": "Default Blue",&#13;
+        "value": "default"&#13;
+      },&#13;
+      {&#13;
+        "label": "Purple",&#13;
+        "value": "purple"&#13;
+      },&#13;
+      {&#13;
+        "label": "Teal",&#13;
+        "value": "teal"&#13;
+      },&#13;
+      {&#13;
+        "label": "Orange",&#13;
+        "value": "orange"&#13;
+      }&#13;
+    ]&#13;
+  }&#13;
+]</option_schema>
         <public>false</public>
         <roles/>
         <script><![CDATA[(function() {
-    gs.info("OpenAINewsWidget: Server script starting");
-    
-    // Default data
-    data.topics = ['Technology', 'Science', 'Business'];
-    data.newsItems = [];
-    
-    // Process requested action
-    if (input && input.action === 'getNewsForTopic' && input.topic) {
-        gs.info("OpenAINewsWidget: Getting news for topic: " + input.topic);
-        getNewsForTopic(input.topic);
+  /* Initialize data object */
+  data.success = false; // Add success flag for the client
+  data.newsItem = null;
+  data.loading = false;
+  data.isDemoMode = false;
+  data.error = null;
+  data.newsLoaded = false;
+  data.debugLog = [];
+  
+  /* Read widget options */
+  var useDemo = (options.use_demo_data === 'true' || options.use_demo_data === true);
+  data.isDemoMode = useDemo;
+  data.themeColor = options.theme_color || 'default';
+  
+  /* Expose direct action handlers */
+  data.action = $sp.getParameter('action') || '';
+  
+  /* Log function */
+  function log(message) {
+    gs.info("[ServiceNow News Summary] " + message);
+    data.debugLog.push(new GlideDateTime().getDisplayValue() + ": " + message);
+  }
+  
+  /* ServiceNow is the only interest */
+  data.interests = ["ServiceNow"];
+  
+  /* Handle action requests */
+  if (data.action === 'loadNews') {
+    log("Load News action received");
+    if (useDemo) {
+      loadDemoData();
     } else {
-        gs.info("OpenAINewsWidget: No action or missing topic");
+      fetchNewsFromAPI();
     }
+    data.newsLoaded = true;
+  } else if (useDemo) {
+    // Only load demo data automatically
+    loadDemoData();
+    data.newsLoaded = true;
+  }
+  
+  /* Helper Functions */
+  function loadDemoData() {
+    log('Loading demo data for ServiceNow news summary');
     
-    // Function to get dummy news
-    function getNewsForTopic(topic) {
-        var items = [
-            {
-                title: 'News about ' + topic + ' (Item 1)',
-                content: 'This is sample content about ' + topic + ' from the server.',
-                source: 'Sample Source 1'
-            },
-            {
-                title: 'More about ' + topic + ' (Item 2)',
-                content: 'This is another article about ' + topic + ' for testing.',
-                source: 'Sample Source 2'
-            }
-        ];
-        
-        data.newsItems = items;
-        gs.info("OpenAINewsWidget: Returning " + items.length + " news items for " + topic);
-        gs.info("OpenAINewsWidget: Data obj: " + JSON.stringify(data));
+    var currentDate = new GlideDateTime();
+    
+    // Only need one demo item now
+    var demoItem = {
+      title: "ServiceNow Releases Tokyo Platform Update",
+      summary: "The latest platform update includes AI-powered features for IT Service Management and improved automation capabilities for IT operations.",
+      source: "ServiceNow Blog",
+      url: "javascript:void(0)",
+      publishDate: currentDate.getDisplayValue(),
+      imageUrl: "news_default.jpg"
+    };
+    
+    data.newsItem = demoItem;
+    data.loading = false;
+    data.success = true; // Set success flag for client
+    
+    log('Demo data loaded successfully');
+  }
+  
+  function fetchNewsFromAPI() {
+    try {
+      data.loading = true;
+      log('Fetching ServiceNow news from Perplexity API');
+      
+      // Get Perplexity API key
+      var apiKey = gs.getProperty('perplexity_api_key');
+      
+      if (!apiKey) {
+        throw new Error('Perplexity API key not configured. Please set the "perplexity_api_key" system property.');
+      }
+      
+      // Create REST message to Perplexity AI API
+      var restMessage = new sn_ws.RESTMessageV2();
+      restMessage.setEndpoint('https://api.perplexity.ai/chat/completions');
+      restMessage.setHttpMethod('POST');
+      restMessage.setRequestHeader('Content-Type', 'application/json');
+      restMessage.setRequestHeader('Authorization', 'Bearer ' + apiKey);
+      
+      // Construct the query using the Sonar model
+      var prompt = "Show me the single most important or latest news about ServiceNow, the cloud computing company that provides IT service management software. " +
+                   "Return a JSON object containing these fields: " +
+                   "title, summary (max 150 chars), source, url, publishDate (ISO format). " +
+                   "Format the response as a valid JSON object.";
+      
+      var requestBody = {
+        "model": "sonar",
+        "messages": [
+          {
+            "role": "system",
+            "content": "You are a helpful assistant that provides the latest ServiceNow news in clean, valid JSON format."
+          },
+          {
+            "role": "user",
+            "content": prompt
+          }
+        ],
+        "max_tokens": 1024,
+        "temperature": 0.2
+      };
+      
+      restMessage.setRequestBody(JSON.stringify(requestBody));
+      
+      log('Sending request to Perplexity API');
+      
+      // Execute the REST call
+      var response = restMessage.execute();
+      var responseBody = response.getBody();
+      var httpStatus = response.getStatusCode();
+      
+      log("Perplexity API response status: " + httpStatus);
+      
+      if (httpStatus != 200) {
+        throw new Error('Perplexity API returned status code: ' + httpStatus);
+      }
+      
+      // Parse the Perplexity response
+      var perplexityResponse = JSON.parse(responseBody);
+      
+      if (!perplexityResponse || !perplexityResponse.choices || !perplexityResponse.choices[0] || !perplexityResponse.choices[0].message) {
+        throw new Error('Invalid response structure from Perplexity API');
+      }
+      
+      var content = perplexityResponse.choices[0].message.content;
+      
+      log('Response content length: ' + (content ? content.length : 0));
+      
+      // Extract JSON from response content
+      var newsItem = extractJSONFromText(content);
+      
+      if (!newsItem || typeof newsItem !== 'object') {
+        throw new Error('Invalid or empty response format from Perplexity API');
+      }
+      
+      log('Extracted news item successfully');
+      
+      // Process the news item to ensure it has all required fields
+      newsItem.imageUrl = "news_default.jpg";
+      
+      // Ensure we have all required fields
+      if (!newsItem.title) newsItem.title = "ServiceNow News";
+      if (!newsItem.summary) newsItem.summary = "No summary available";
+      if (!newsItem.source) newsItem.source = "News Source";
+      if (!newsItem.url) newsItem.url = "javascript:void(0)";
+      if (!newsItem.publishDate) newsItem.publishDate = new GlideDateTime().getDisplayValue();
+      
+      // Update the data object
+      data.newsItem = newsItem;
+      data.error = null;
+      data.success = true; // Set success flag for client
+      
+      log('Successfully processed news item');
+      
+    } catch (ex) {
+      var errorMsg = ex.message || 'Unknown error occurred';
+      log("Error in fetchNewsFromAPI: " + errorMsg);
+      
+      gs.error("ServiceNow News Summary Error: " + errorMsg);
+      data.error = "An error occurred while retrieving ServiceNow news: " + errorMsg;
+      data.newsItem = null;
+      data.success = false; // Set success flag to false
+    } finally {
+      data.loading = false;
     }
+  }
+  
+  function extractJSONFromText(text) {
+    try {
+      // First, try to parse the entire text as JSON
+      try {
+        return JSON.parse(text);
+      } catch (e) {
+        log("Text is not valid JSON, trying to extract JSON object");
+      }
+      
+      // Look for JSON object in the text
+      var jsonStartIndex = text.indexOf('{');
+      var jsonEndIndex = text.lastIndexOf('}') + 1;
+      
+      if (jsonStartIndex === -1 || jsonEndIndex === -1) {
+        throw new Error('Could not find JSON object in response');
+      }
+      
+      var jsonStr = text.substring(jsonStartIndex, jsonEndIndex);
+      log("Extracted JSON string: " + jsonStr.substring(0, 100) + "...");
+      
+      return JSON.parse(jsonStr);
+    } catch (ex) {
+      log("Error extracting JSON: " + ex.message);
+      return null;
+    }
+  }
 })();]]></script>
         <servicenow>false</servicenow>
         <sys_class_name>sp_widget</sys_class_name>
         <sys_created_by>admin</sys_created_by>
         <sys_created_on>2025-03-19 00:51:46</sys_created_on>
         <sys_id>e54005728358aa1094b111b6feaad386</sys_id>
-        <sys_mod_count>26</sys_mod_count>
-        <sys_name>OpenAI News Widget</sys_name>
+        <sys_mod_count>44</sys_mod_count>
+        <sys_name>ServiceNow News Widget</sys_name>
         <sys_package display_value="Knowledge 25 Presentation" source="x_1511177_knowle_0">1f56a5f58354661094b111b6feaad35f</sys_package>
         <sys_policy/>
         <sys_scope display_value="Knowledge 25 Presentation">1f56a5f58354661094b111b6feaad35f</sys_scope>
         <sys_update_name>sp_widget_e54005728358aa1094b111b6feaad386</sys_update_name>
         <sys_updated_by>admin</sys_updated_by>
-        <sys_updated_on>2025-03-19 03:00:57</sys_updated_on>
-        <template><![CDATA[<div>
-  <div class="panel panel-default">
-    <div class="panel-heading">
-      <button class="btn btn-default btn-xs" ng-click="prev()">←</button>
-      <span>{{topic}} News</span>
-      <button class="btn btn-default btn-xs" ng-click="next()">→</button>
-      <button class="btn btn-default btn-xs pull-right" ng-click="refresh()">⟳</button>
+        <sys_updated_on>2025-03-21 23:59:20</sys_updated_on>
+        <template><![CDATA[<!-- ServiceNow News Summary Widget HTML Template with GlideAjax -->
+<div class="news-feed-widget">
+  <div class="widget-header">
+    <h2>
+      <i class="fa fa-newspaper-o"></i> 
+      {{::options.title || 'ServiceNow News Summary'}}
+    </h2>
+  </div>
+  
+  <div class="widget-body">
+    <!-- Debug info - only visible during testing -->
+    <div class="debug-info" ng-if="options.show_debug === 'true'" style="background:#f8f8f8; padding:10px; margin-bottom:10px; font-size:12px; border:1px solid #ddd;">
+      <p><strong>Debug Info:</strong></p>
+      <ul style="margin:0; padding-left:20px;">
+        <li>Loading: {{c.loading}}</li>
+        <li>Demo Mode: {{c.data.isDemoMode}}</li>
+        <li>News Available: {{c.newsItem ? 'Yes' : 'No'}}</li>
+        <li>Error: {{c.error || 'None'}}</li>
+      </ul>
+      <div style="margin-top:10px;" ng-if="debugMessages.length > 0">
+        <strong>Client Debug Log:</strong>
+        <ul style="margin-top:5px; padding-left:20px; max-height:200px; overflow-y:auto; font-size:11px;">
+          <li ng-repeat="message in debugMessages">{{message}}</li>
+        </ul>
+      </div>
+      <div style="margin-top:10px;">
+        <button ng-click="c.loadNewsAjax(true)" class="btn btn-xs btn-default">
+          Debug Load via Ajax
+        </button>
+      </div>
     </div>
-    <div class="panel-body">
-      <p ng-if="loading">Loading...</p>
-      <div ng-if="!loading">
-        <h4>{{news.title}}</h4>
-        <p>{{news.content}}</p>
-        <p><small>Source: {{news.source}}</small></p>
-        <div>
-          <button class="btn btn-default btn-xs" ng-click="prevNews()">Prev</button>
-          <button class="btn btn-default btn-xs" ng-click="nextNews()">Next</button>
+    
+    <!-- Loading state -->
+    <div class="loading-container" ng-if="c.loading">
+      <span class="fa fa-spinner fa-spin"></span>
+      <p>Fetching the latest ServiceNow news...</p>
+    </div>
+    
+    <!-- Load News button - only shown when no news is loaded yet and not in demo mode -->
+    <div class="news-placeholder" ng-if="!c.newsItem && !c.loading && !c.data.isDemoMode">
+      <div class="placeholder-content">
+        <i class="fa fa-newspaper-o" style="font-size: 36px; color: #ccc; margin-bottom: 15px;"></i>
+        <h4>Stay informed with the latest ServiceNow news</h4>
+        <p class="text-muted">Get a summary of the latest platform updates and announcements</p>
+        
+        <button ng-click="c.loadNewsAjax()" class="btn btn-primary">
+          <i class="fa fa-refresh"></i> Load News
+        </button>
+      </div>
+    </div>
+    
+    <!-- Error state -->
+    <div class="error-container" ng-if="c.error && !c.loading">
+      <i class="fa fa-exclamation-triangle"></i>
+      <p>{{c.error}}</p>
+      <button ng-click="c.loadNewsAjax()" class="btn btn-default">Try Again</button>
+    </div>
+    
+    <!-- Single news article - only shown when we have news -->
+    <div class="news-article" ng-if="c.newsItem && !c.loading">
+      <!-- Article content -->
+      <div class="article-card">
+        <!-- Article image (if available) -->
+        <div class="article-image" ng-if="c.newsItem.imageUrl">
+          <img ng-src="{{c.newsItem.imageUrl}}" alt="{{c.newsItem.title}}" onerror="this.src='sp_news_default.jpg'">
+          <div class="source-badge">{{c.newsItem.source}}</div>
+        </div>
+        
+        <!-- Article content -->
+        <div class="article-content">
+          <!-- If no image is available, display source at the top -->
+          <div class="article-meta" ng-if="!c.newsItem.imageUrl">
+            <span class="source-text" style="font-weight:500; color:#5a3a9e;">{{c.newsItem.source}}</span>
+          </div>
+          
+          <h3 class="article-title">
+            <a ng-href="{{c.newsItem.url}}" target="_blank" rel="noopener noreferrer">
+              {{c.newsItem.title}}
+            </a>
+          </h3>
+          
+          <div class="article-meta">
+            <span class="publish-date">
+              <i class="fa fa-clock-o"></i> 
+              {{c.formatDate(c.newsItem.publishDate)}}
+            </span>
+          </div>
+          
+          <p class="article-summary">{{c.newsItem.summary}}</p>
+          
+          <a ng-href="{{c.newsItem.url}}" target="_blank" rel="noopener noreferrer" class="read-more">
+            Read more <i class="fa fa-external-link"></i>
+          </a>
         </div>
       </div>
     </div>
+    
+    <!-- No news items state - after loading returned no results -->
+    <div class="no-content-container" ng-if="!c.newsItem && !c.loading && c.newsLoaded && !c.error">
+      <i class="fa fa-info-circle"></i>
+      <p>No ServiceNow news articles found. Please try again later.</p>
+      <button class="btn btn-default" ng-click="c.loadNewsAjax()">Refresh</button>
+    </div>
+  </div>
+  
+  <div class="widget-footer">
+    <div class="widget-actions">
+      <a href="javascript:void(0)" class="refresh-link" ng-click="c.loadNewsAjax()">
+        <i class="fa fa-refresh"></i> Refresh
+      </a>
+    </div>
+    <span class="powered-by" ng-if="!c.data.isDemoMode">
+      Powered by Perplexity AI
+    </span>
+    <span class="demo-mode" ng-if="c.data.isDemoMode">
+      <i class="fa fa-info-circle"></i> Demo Mode
+    </span>
   </div>
 </div>]]></template>
     </sp_widget>

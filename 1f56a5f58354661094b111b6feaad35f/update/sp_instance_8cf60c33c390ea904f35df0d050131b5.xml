@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="UTF-8"?><record_update table="sp_instance">
+    <sp_instance action="INSERT_OR_UPDATE">
+        <active>true</active>
+        <class_name/>
+        <color>default</color>
+        <css/>
+        <glyph/>
+        <id/>
+        <order>1</order>
+        <roles/>
+        <short_description/>
+        <size>md</size>
+        <sp_column display_value="1">5fa0c87bc350ea904f35df0d050131c6</sp_column>
+        <sp_widget display_value="ServiceNow News Widget">e54005728358aa1094b111b6feaad386</sp_widget>
+        <sys_class_name>sp_instance</sys_class_name>
+        <sys_created_by>admin</sys_created_by>
+        <sys_created_on>2025-03-21 23:13:12</sys_created_on>
+        <sys_id>8cf60c33c390ea904f35df0d050131b5</sys_id>
+        <sys_mod_count>3</sys_mod_count>
+        <sys_name/>
+        <sys_package display_value="Knowledge 25 Presentation" source="x_1511177_knowle_0">1f56a5f58354661094b111b6feaad35f</sys_package>
+        <sys_policy/>
+        <sys_scope display_value="Knowledge 25 Presentation">1f56a5f58354661094b111b6feaad35f</sys_scope>
+        <sys_update_name>sp_instance_8cf60c33c390ea904f35df0d050131b5</sys_update_name>
+        <sys_updated_by>admin</sys_updated_by>
+        <sys_updated_on>2025-03-22 00:01:41</sys_updated_on>
+        <title/>
+        <url/>
+        <widget_parameters><![CDATA[{
+	"title": {
+		"value": "",
+		"displayValue": ""
+	},
+	"subtitle": {
+		"value": "",
+		"displayValue": ""
+	},
+	"max_articles": {
+		"value": null,
+		"displayValue": ""
+	},
+	"refresh_interval": {
+		"value": 5,
+		"displayValue": "5"
+	},
+	"openai_endpoint": {
+		"value": "https://api.openai.com/v1/chat/completions",
+		"displayValue": "https://api.openai.com/v1/chat/completions"
+	},
+	"use_demo_data": {
+		"value": "true",
+		"displayValue": "true"
+	},
+	"show_debug": {
+		"value": "false",
+		"displayValue": "false"
+	},
+	"theme_color": {
+		"value": "default",
+		"displayValue": "Default Blue"
+	}
+}]]></widget_parameters>
+    </sp_instance>
+    <sys_translated_text action="delete_multiple" query="documentkey=8cf60c33c390ea904f35df0d050131b5"/>
+</record_update>

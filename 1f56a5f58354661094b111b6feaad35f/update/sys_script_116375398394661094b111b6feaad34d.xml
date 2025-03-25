@@ -33,8 +33,12 @@
     // Only run when close_notes exist (typically when an incident is resolved)
     if (current.close_notes) {
         try {
+
+			// type of content
+			var typeOfContent = gs.getProperty('x_1511177_knowle_0.typeOfContent')
+
             // Create prompt by combining incident fields
-            var prompt = 'Write a haiku based on the following ServiceNow incident details. ' + 
+            var prompt = 'Write a ' + typeOfContent + ' based on the following ServiceNow incident details. ' + 
                          'Short Description: ' + current.short_description + '. ' +
                          'Description: ' + current.description + '. ' +
                          'Resolution: ' + current.close_notes;
@@ -42,7 +46,7 @@
 			var apiKey = gs.getProperty('x_1511177_knowle_0.togetherai.api.key');
 
             // Create and configure REST message
-            var r = new sn_ws.RESTMessageV2('x_1511177_knowle_0.Together.ai', 'generate_haiku');
+            var r = new sn_ws.RESTMessageV2('x_1511177_knowle_0.Together.ai', 'generate_content');
             r.setStringParameterNoEscape('apiKey', apiKey);
             r.setStringParameterNoEscape('prompt', prompt);
             
@@ -70,7 +74,7 @@
                 
                 // Add the haiku as a work note or custom field
                 // Option 1: Add as work note
-                current.work_notes = "AI Generated Haiku:\n" + haiku;
+                current.work_notes = "AI Generated content:\n" + haiku;
                 current.update();
                 
                 // Option 2: If you have a custom field for the haiku
@@ -93,7 +97,7 @@
         <sys_domain>global</sys_domain>
         <sys_domain_path>/</sys_domain_path>
         <sys_id>116375398394661094b111b6feaad34d</sys_id>
-        <sys_mod_count>6</sys_mod_count>
+        <sys_mod_count>8</sys_mod_count>
         <sys_name>Generate Haiku</sys_name>
         <sys_overrides/>
         <sys_package display_value="Knowledge 25 Presentation" source="x_1511177_knowle_0">1f56a5f58354661094b111b6feaad35f</sys_package>
@@ -101,7 +105,7 @@
         <sys_scope display_value="Knowledge 25 Presentation">1f56a5f58354661094b111b6feaad35f</sys_scope>
         <sys_update_name>sys_script_116375398394661094b111b6feaad34d</sys_update_name>
         <sys_updated_by>admin</sys_updated_by>
-        <sys_updated_on>2025-03-16 02:36:08</sys_updated_on>
+        <sys_updated_on>2025-03-22 01:06:36</sys_updated_on>
         <template/>
         <when>async_always</when>
     </sys_script>

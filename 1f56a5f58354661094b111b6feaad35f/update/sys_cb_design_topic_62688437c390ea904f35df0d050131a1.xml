@@ -1,0 +1,281 @@
+<?xml version="1.0" encoding="UTF-8"?><record_update sys_domain="global" table="sys_cb_design_topic">
+    <sys_cb_design_topic action="INSERT_OR_UPDATE">
+        <compiled_topic display_value="Celebrity Impersonator">1e688437c390ea904f35df0d0501319c</compiled_topic>
+        <design_definition>{"type":"FlowTopic","triggers":[{"type":"Trigger","name":"04567756d0b441f494bd11025ed7e01b","triggerType":"request","applicability":{"type":"Applicability","mode":"script","value":"true"},"id":"04567756d0b441f494bd11025ed7e01b"}],"goals":[{"name":"primary","trigger_id":"04567756d0b441f494bd11025ed7e01b","nodes":[{"type":"StartGoal","goal_id":"primary","greeting_msg":{"type":"String","mode":"string","value":""},"id":"ad4c9e52b2674e2b8b350f723ee4529a","name":"Start","expert_mode":false},{"type":"TerminateGoal","goal_id":"primary","confirmation_msg":{"type":"String","mode":"string","value":""},"id":"686dac2a886f438b933c739adc3c6102","name":"End","expert_mode":false},{"type":"InputPrompt","variable_id":"62079c73d62f48e1abcd5bdf6c3702c8","message":{"type":"String","mode":"string","value":"gs.getMessageLang(\"Ask a question\", vaContext.getRequesterLang())"},"nlu_entity_binding":{"type":"NLUEntityBinding","allow_text_input":false,"use_confirmation_prompt":true},"request_feedback":true,"skippable":{"type":"Applicability","mode":"script","value":"false"},"skipreprompt":{"type":"Applicability","mode":"script","value":"false"},"id":"01c4d0f65ff84be9b18b9b8dd0c2e31d","name":"Ask a question","goal_id":"primary","applicability":{"type":"Applicability","mode":"script","value":"true"},"expert_mode":false,"formatType":"Text","validationScript":"","description":""},{"type":"ScriptOutputPrompt","output_type":"single_part","id":"eeedef82cf5a4ac28ac13adc00c452c2","name":"Get response","goal_id":"primary","applicability":{"type":"Applicability","mode":"script","value":"true"},"expert_mode":false,"value":{"type":"String","mode":"string","value":"(function execute() {\n\n var r = new sn_ws.RESTMessageV2('x_1511177_knowle_0.Together.ai', 'celebrity_impersonation');\n r.setStringParameterNoEscape('apiKey', 'cbaecbd8165dca91f680319fc7396cfe60b380fd402c11f943faf5f667f4f797');\n r.setStringParameterNoEscape('prompt', vaInputs.ask_a_question);\n r.setStringParameterNoEscape('celebrity', 'Bugs bunny');\n \n    var response = r.execute();\n    var responseBody = response.getBody();\n    var httpStatus = response.getStatusCode();\n    var perplexResponse = JSON.parse(responseBody);\n    // Extract the content and format with citations\n    var formattedAnswer = \"\";\n    \n    try {\n        // Get the message content\n        var content = perplexResponse.choices[0].message.content;\n        \n        // Get the citation links\n        var citations = perplexResponse.citations || [];\n        \n        // Format the answer with the content\n        formattedAnswer = content;\n        \n        // Add formatted citations as hyperlinks if they exist\n        if (citations.length &gt; 0) {\n            formattedAnswer += \"\\n\\n**Sources:**\\n\";\n            \n            for (var i = 0; i &lt; citations.length; i++) {\n                // Create numbered hyperlinks for each citation\n                // ServiceNow uses markdown-like format for hyperlinks: [text](url)\n                formattedAnswer += \"[\" + (i + 1) + \"] [\" + citations[i] + \"](\" + citations[i] + \")\\n\";\n            }\n        }\n    } catch (e) {\n        // Handle any parsing errors\n        formattedAnswer = \"Sorry, I couldn't process that response properly. Error: \" + e.message;\n    }\n    \n    return formattedAnswer;\n\n})()\n   "},"secure":false},{"type":"Decision","name":"Decision","branches":[{"type":"Branch","label":"Yes","expression":{"type":"Applicability","mode":"query","value":""},"id":"6d03a86fdf424c858f587a6f1eb803c7","name":"Yes","expert_mode":false},{"type":"Branch","label":"No","expression":{"type":"Applicability","mode":"query","value":"question_answered_=No"},"id":"442c5588528c4369acc47f2826f8258f","name":"No","expert_mode":false}],"id":"4a1f71c060544fc5b887c041507f182f","goal_id":"primary","expert_mode":false},{"type":"ChoiceInputPrompt","expression_mode":"simple","metadataScript":"","cardName":"","cardFields":[],"id":"37a098d8fc194b49b20450a0b6014352","name":"Question answered?","goal_id":"primary","applicability":{"type":"Applicability","mode":"script","value":"true"},"expert_mode":false,"variable_id":"e68ce10c92564a8fafdae968e1ed8dc8","message":{"type":"String","mode":"string","value":"gs.getMessageLang(\"Have you received the information you were seeking, or would you like me to connect you with a live agent?\", vaContext.getRequesterLang())"},"request_feedback":false,"skippable":{"type":"Applicability","mode":"script","value":"false"},"skipreprompt":{"type":"Applicability","mode":"script","value":"false"},"nlu_entity_binding":{"type":"NLUEntityBinding","allow_text_input":false,"use_confirmation_prompt":true},"description":""}],"edges":[{"type":"Edge","source_node_id":"4a1f71c060544fc5b887c041507f182f","target_node_id":"686dac2a886f438b933c739adc3c6102","branch_id":"6d03a86fdf424c858f587a6f1eb803c7","id":"9e1060fcc85b4aa081eb8a79daa610e3","name":"6d03a86fdf424c858f587a6f1eb803c7"},{"type":"Edge","source_node_id":"ad4c9e52b2674e2b8b350f723ee4529a","target_node_id":"01c4d0f65ff84be9b18b9b8dd0c2e31d","id":"8dad8c1a68c842c6b16d8ee08baf2fe3"},{"type":"Edge","source_node_id":"01c4d0f65ff84be9b18b9b8dd0c2e31d","target_node_id":"eeedef82cf5a4ac28ac13adc00c452c2","id":"70332fad27434e1aa13928c8ab5dde64"},{"type":"Edge","source_node_id":"4a1f71c060544fc5b887c041507f182f","target_node_id":"01c4d0f65ff84be9b18b9b8dd0c2e31d","branch_id":"442c5588528c4369acc47f2826f8258f","id":"78d8e3116f0b4b6381beb2df8f929e47","name":"442c5588528c4369acc47f2826f8258f"},{"type":"Edge","source_node_id":"eeedef82cf5a4ac28ac13adc00c452c2","target_node_id":"37a098d8fc194b49b20450a0b6014352","id":"5f5d00a26a384c02afa1b57009178bad"},{"type":"Edge","source_node_id":"37a098d8fc194b49b20450a0b6014352","target_node_id":"4a1f71c060544fc5b887c041507f182f","id":"eb7f1a103fbb4ae2bfdb7661dbd7fe9f"}],"id":"primary"}],"script_variables":[],"glide_variables":[{"type":"Reference","table":"sys_user","auto_select":false,"id":"current-user","name":"user","formatType":"text","secure":false,"sensitive":false,"aiInput":false,"list":false},{"type":"String","name":"ask_a_question","list":false,"id":"62079c73d62f48e1abcd5bdf6c3702c8","formatType":"Text","validationScript":"","secure":false,"sensitive":false,"aiInput":false},{"type":"Choice","choices":[{"name":"Yes","element":"Yes"},{"name":"No","element":"No"}],"id":"e68ce10c92564a8fafdae968e1ed8dc8","name":"question_answered_","formatType":"text","secure":false,"sensitive":false,"aiInput":false,"list":false,"label":"Question Answered?"}],"applicability":{"type":"Applicability","mode":"script","value":"true"},"roles":[],"scope":"1f56a5f58354661094b111b6feaad35f","domain":"global","topic_type":"STANDARD","channels":[],"dialog_acts_enabled":false,"id":"c52863d2831c2a1094b111b6feaad30c","name":"Celebrity Impersonator","key_phrases":["Celebrity Impersonator"],"nlu_provider":"","nlu_model":"","nlu_model_label":"","nlu_intent":"","nlu_intent_label":"","flexible_conversation_switching":false,"autopilot_topic":false,"design_categories":[],"triggerable_by_notification":false,"model_type":"nlu_keyword","foundational":false,"modify_confirmation_enabled":false,"context_profiles":[],"title":"Celebrity Impersonator","library":false,"csTopicId":"1e688437c390ea904f35df0d0501319c","readOnly":false,"nluMapping":"[]"}</design_definition>
+        <design_topic_id>c52863d2831c2a1094b111b6feaad30c</design_topic_id>
+        <graph>{
+  "graph_api_version": "1.0.74",
+  "goals": {
+    "primary": {
+      "id": "primary",
+      "trigger": {
+        "type": "primary"
+      },
+      "name": "primary",
+      "applicability": "",
+      "description": "",
+      "nodes": {
+        "ad4c9e52b2674e2b8b350f723ee4529a": {
+          "id": "ad4c9e52b2674e2b8b350f723ee4529a",
+          "stepType": "Start",
+          "name": "Start",
+          "greetingResponse": {
+            "mode": "simple",
+            "value": ""
+          }
+        },
+        "686dac2a886f438b933c739adc3c6102": {
+          "id": "686dac2a886f438b933c739adc3c6102",
+          "stepType": "TerminateGoal",
+          "name": "End",
+          "confirmationMessage": {
+            "mode": "simple",
+            "value": ""
+          }
+        },
+        "01c4d0f65ff84be9b18b9b8dd0c2e31d": {
+          "id": "01c4d0f65ff84be9b18b9b8dd0c2e31d",
+          "stepType": "TextPrompt",
+          "name": "Ask a question",
+          "prompt": {
+            "value": [
+              {
+                "type": "paragraph",
+                "children": [
+                  {
+                    "text": "Ask a question"
+                  }
+                ]
+              }
+            ],
+            "mode": "simple"
+          },
+          "confirmMessage": {
+            "value": "",
+            "mode": "simple"
+          },
+          "acknowledgeMsg": {
+            "value": "",
+            "mode": "simple"
+          },
+          "applicability": {
+            "value": "",
+            "mode": "query"
+          },
+          "skippable": {
+            "value": "",
+            "mode": "query"
+          },
+          "skipReprompt": {
+            "value": "",
+            "mode": "query"
+          },
+          "defaultValue": {
+            "value": "",
+            "mode": "simple"
+          },
+          "withNluUserInput": false,
+          "skipIfFulfilled": false,
+          "variableId": "62079c73d62f48e1abcd5bdf6c3702c8",
+          "detailDescription": "",
+          "inputType": {
+            "format": "Text",
+            "script": ""
+          },
+          "requestFeedback": true
+        },
+        "eeedef82cf5a4ac28ac13adc00c452c2": {
+          "id": "eeedef82cf5a4ac28ac13adc00c452c2",
+          "stepType": "ScriptOutput",
+          "name": "Get response",
+          "output_type": "single_part",
+          "script": "(function execute() {\n\n var r = new sn_ws.RESTMessageV2('x_1511177_knowle_0.Together.ai', 'celebrity_impersonation');\n r.setStringParameterNoEscape('apiKey', 'cbaecbd8165dca91f680319fc7396cfe60b380fd402c11f943faf5f667f4f797');\n r.setStringParameterNoEscape('prompt', vaInputs.ask_a_question);\n r.setStringParameterNoEscape('celebrity', 'Bugs bunny');\n \n    var response = r.execute();\n    var responseBody = response.getBody();\n    var httpStatus = response.getStatusCode();\n    var perplexResponse = JSON.parse(responseBody);\n    // Extract the content and format with citations\n    var formattedAnswer = \"\";\n    \n    try {\n        // Get the message content\n        var content = perplexResponse.choices[0].message.content;\n        \n        // Get the citation links\n        var citations = perplexResponse.citations || [];\n        \n        // Format the answer with the content\n        formattedAnswer = content;\n        \n        // Add formatted citations as hyperlinks if they exist\n        if (citations.length &gt; 0) {\n            formattedAnswer += \"\\n\\n**Sources:**\\n\";\n            \n            for (var i = 0; i &lt; citations.length; i++) {\n                // Create numbered hyperlinks for each citation\n                // ServiceNow uses markdown-like format for hyperlinks: [text](url)\n                formattedAnswer += \"[\" + (i + 1) + \"] [\" + citations[i] + \"](\" + citations[i] + \")\\n\";\n            }\n        }\n    } catch (e) {\n        // Handle any parsing errors\n        formattedAnswer = \"Sorry, I couldn't process that response properly. Error: \" + e.message;\n    }\n    \n    return formattedAnswer;\n\n})()\n   ",
+          "applicability": {
+            "value": "",
+            "mode": "query"
+          }
+        },
+        "4a1f71c060544fc5b887c041507f182f": {
+          "id": "4a1f71c060544fc5b887c041507f182f",
+          "stepType": "Decision",
+          "name": "Decision"
+        },
+        "37a098d8fc194b49b20450a0b6014352": {
+          "name": "Question answered?",
+          "prompt": {
+            "value": [
+              {
+                "type": "paragraph",
+                "children": [
+                  {
+                    "text": "Have you received the information you were seeking, or would you like me to connect you with a live agent?"
+                  }
+                ]
+              }
+            ],
+            "mode": "simple"
+          },
+          "confirmMessage": {
+            "value": "",
+            "mode": "simple"
+          },
+          "acknowledgeMsg": {
+            "value": "",
+            "mode": "simple"
+          },
+          "applicability": {
+            "value": "",
+            "mode": "query"
+          },
+          "skippable": {
+            "value": "",
+            "mode": "query"
+          },
+          "skipReprompt": {
+            "value": "",
+            "mode": "query"
+          },
+          "defaultValue": {
+            "value": "",
+            "mode": "simple"
+          },
+          "variableId": "e68ce10c92564a8fafdae968e1ed8dc8",
+          "detailDescription": "",
+          "id": "37a098d8fc194b49b20450a0b6014352",
+          "stepType": "ChoicePrompt",
+          "hasCardHeader": false,
+          "cardMetadata": {
+            "mode": "card",
+            "metadataScript": "",
+            "cardTemplate": "",
+            "cardFields": {},
+            "cardDefinition": {}
+          },
+          "withNluUserInput": false,
+          "skipIfFulfilled": false
+        }
+      },
+      "edges": [
+        {
+          "id": "9e1060fcc85b4aa081eb8a79daa610e3",
+          "edgeType": "Branch",
+          "source": "4a1f71c060544fc5b887c041507f182f",
+          "target": "686dac2a886f438b933c739adc3c6102",
+          "sourcePort": "",
+          "targetPort": "",
+          "expression": {
+            "value": "",
+            "mode": "query"
+          },
+          "label": "Yes"
+        },
+        {
+          "id": "8dad8c1a68c842c6b16d8ee08baf2fe3",
+          "edgeType": "Edge",
+          "source": "ad4c9e52b2674e2b8b350f723ee4529a",
+          "target": "01c4d0f65ff84be9b18b9b8dd0c2e31d",
+          "sourcePort": "",
+          "targetPort": ""
+        },
+        {
+          "id": "70332fad27434e1aa13928c8ab5dde64",
+          "edgeType": "Edge",
+          "source": "01c4d0f65ff84be9b18b9b8dd0c2e31d",
+          "target": "eeedef82cf5a4ac28ac13adc00c452c2",
+          "sourcePort": "",
+          "targetPort": ""
+        },
+        {
+          "id": "78d8e3116f0b4b6381beb2df8f929e47",
+          "edgeType": "Branch",
+          "source": "4a1f71c060544fc5b887c041507f182f",
+          "target": "01c4d0f65ff84be9b18b9b8dd0c2e31d",
+          "sourcePort": "",
+          "targetPort": "",
+          "expression": {
+            "value": "vaInputs.question_answered_=No",
+            "mode": "query"
+          },
+          "label": "No"
+        },
+        {
+          "id": "5f5d00a26a384c02afa1b57009178bad",
+          "edgeType": "Edge",
+          "source": "eeedef82cf5a4ac28ac13adc00c452c2",
+          "target": "37a098d8fc194b49b20450a0b6014352",
+          "sourcePort": "",
+          "targetPort": ""
+        },
+        {
+          "id": "eb7f1a103fbb4ae2bfdb7661dbd7fe9f",
+          "edgeType": "Edge",
+          "source": "37a098d8fc194b49b20450a0b6014352",
+          "target": "4a1f71c060544fc5b887c041507f182f",
+          "sourcePort": "",
+          "targetPort": ""
+        }
+      ]
+    }
+  },
+  "variables": {
+    "current-user": {
+      "category": "vaInputs",
+      "id": "current-user",
+      "label": "User",
+      "name": "user",
+      "table": "sys_user",
+      "varType": "reference"
+    },
+    "62079c73d62f48e1abcd5bdf6c3702c8": {
+      "id": "62079c73d62f48e1abcd5bdf6c3702c8",
+      "name": "ask_a_question",
+      "label": "Ask A Question",
+      "varType": "string",
+      "secure": false,
+      "category": "vaInputs",
+      "encryptionHashFunction": "SHA-256",
+      "encryptionSalt": {
+        "value": "MTc0MjI1NTMyOTI0MiBWQSBEZXNpZ25lciBpcyBhd2Vzb21l",
+        "mode": "simple"
+      },
+      "nodeId": "01c4d0f65ff84be9b18b9b8dd0c2e31d",
+      "isHidden": false
+    },
+    "e68ce10c92564a8fafdae968e1ed8dc8": {
+      "id": "e68ce10c92564a8fafdae968e1ed8dc8",
+      "name": "question_answered_",
+      "label": "Question Answered?",
+      "varType": "choice",
+      "choices": [
+        {
+          "label": "Yes",
+          "value": "Yes"
+        },
+        {
+          "label": "No",
+          "value": "No"
+        }
+      ],
+      "category": "vaInputs",
+      "nodeId": "37a098d8fc194b49b20450a0b6014352",
+      "isHidden": false
+    }
+  }
+}</graph>
+        <name>Celebrity Impersonator</name>
+        <sys_class_name>sys_cb_design_topic</sys_class_name>
+        <sys_created_by>admin</sys_created_by>
+        <sys_created_on>2025-03-21 23:19:39</sys_created_on>
+        <sys_domain>global</sys_domain>
+        <sys_id>62688437c390ea904f35df0d050131a1</sys_id>
+        <sys_mod_count>1</sys_mod_count>
+        <sys_name>FlowTopic</sys_name>
+        <sys_package display_value="Knowledge 25 Presentation" source="x_1511177_knowle_0">1f56a5f58354661094b111b6feaad35f</sys_package>
+        <sys_policy/>
+        <sys_scope display_value="Knowledge 25 Presentation">1f56a5f58354661094b111b6feaad35f</sys_scope>
+        <sys_update_name>sys_cb_design_topic_62688437c390ea904f35df0d050131a1</sys_update_name>
+        <sys_updated_by>admin</sys_updated_by>
+        <sys_updated_on>2025-03-21 23:20:10</sys_updated_on>
+        <type>FlowTopic</type>
+    </sys_cb_design_topic>
+</record_update>
