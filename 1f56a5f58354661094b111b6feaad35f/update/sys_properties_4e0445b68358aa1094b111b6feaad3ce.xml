@@ -11,19 +11,16 @@
         <sys_created_by>admin</sys_created_by>
         <sys_created_on>2025-03-19 01:06:47</sys_created_on>
         <sys_id>4e0445b68358aa1094b111b6feaad3ce</sys_id>
-        <sys_mod_count>0</sys_mod_count>
+        <sys_mod_count>1</sys_mod_count>
         <sys_name>x_1511177_knowle_0.openai.api.key</sys_name>
         <sys_package display_value="Knowledge 25 Presentation" source="x_1511177_knowle_0">1f56a5f58354661094b111b6feaad35f</sys_package>
         <sys_policy/>
         <sys_scope display_value="Knowledge 25 Presentation">1f56a5f58354661094b111b6feaad35f</sys_scope>
         <sys_update_name>sys_properties_4e0445b68358aa1094b111b6feaad3ce</sys_update_name>
         <sys_updated_by>admin</sys_updated_by>
-        <sys_updated_on>2025-03-19 01:06:47</sys_updated_on>
+        <sys_updated_on>2025-05-02 03:10:04</sys_updated_on>
         <type>password2</type>
-        <value>{{dflt-gpaes}}771o6pTedBeWTvu1Vh9VtE9zU6myB5bdq3Ccu8CWGSUVqAcYCGFBVb1+UnEPKW8Audk/90yb3oEU&#13;
-PettB4YaGFxF0San+R8FZxsz/ET9rl4PLr5YKctOBPg7YWPxI9df4Bzyo+1FmDxf1PHBGhKBCAbM&#13;
-I9qYKw1fdWyvgWt4QG5KG1Ws0bzb095h0WvGm9DjL2MmHx9Ao+NAX06GKEXMZI8AR/2YcYvDV+Vu&#13;
-S/iuCgU=</value>
+        <value/>
         <write_roles/>
     </sys_properties>
     <sys_translated_text action="delete_multiple" query="documentkey=4e0445b68358aa1094b111b6feaad3ce"/>
